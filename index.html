@@ -1602,10 +1602,12 @@ document.addEventListener('touchend', e=>{
 }, {passive:false});
 
 /* ===== v9：改用 TWSE OpenAPI + TPEX OpenAPI（免費無限制，一次抓全市場）===== */
-// codetabs 為主要 CORS 代理；corsproxy.io/allorigins 作為備援
+// codetabs 主要代理（快，但對 >2MB 的大 payload 會吐 0 bytes）
+// jina.ai 支援大 payload（4MB+），作為大檔 fallback
 const FINMIND_ENDPOINTS = [
   { name: 'codetabs',  build: u => 'https://api.codetabs.com/v1/proxy/?quest=' + u },
   { name: '直連',      build: u => u },
+  { name: 'jina',      build: u => 'https://r.jina.ai/' + u },
   { name: 'corsproxy', build: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
   { name: 'allorigins',build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) }
 ];
@@ -1659,23 +1661,42 @@ function computeSig(trend, pct){
   return '觀';
 }
 
-// 通用代理嘗試 + 端點鎖定
-async function proxyFetchJson(rawUrl, label){
-  if(finmindEndpoint){
-    const res = await fetch(finmindEndpoint.build(rawUrl), { cache:'no-cache' });
-    if(!res.ok) throw new Error(`${finmindEndpoint.name} HTTP ${res.status}`);
-    return await res.json();
+// 讀 response 為文字並嘗試當 JSON parse
+// 支援：(1) 空 body（返回 null，讓外層 fallback）(2) jina.ai 的 markdown 前綴（自動剝離）
+async function readJsonTolerant(res, epName){
+  const txt = await res.text();
+  if(!txt || txt.length < 2) return null; // 空 body，視為失敗
+  // jina.ai 會加 "Title: ...\nMarkdown Content:\n[...]"
+  // 找到第一個 [ 或 { 作為 JSON 起點
+  let start = -1;
+  for(let i=0; i<Math.min(txt.length, 2000); i++){
+    const c = txt[i];
+    if(c === '[' || c === '{'){ start = i; break; }
   }
+  if(start < 0) return null;
+  const body = txt.slice(start);
+  return JSON.parse(body);
+}
+
+// 通用代理嘗試 + 端點鎖定；locked 失敗時自動 fallback
+async function proxyFetchJson(rawUrl, label){
+  const order = finmindEndpoint
+    ? [finmindEndpoint, ...FINMIND_ENDPOINTS.filter(e=>e.name!==finmindEndpoint.name)]
+    : FINMIND_ENDPOINTS;
   let lastErr;
   const tried = [];
-  for(const ep of FINMIND_ENDPOINTS){
+  for(const ep of order){
     try{
-      if(window.updateProgress) window.updateProgress(`測試 ${ep.name} (${label})...`);
+      if(window.updateProgress) window.updateProgress(`${ep.name} (${label})...`);
       const res = await fetch(ep.build(rawUrl), { cache:'no-cache' });
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const j = await res.json();
-      finmindEndpoint = ep;
-      console.log(`代理端點鎖定：${ep.name}`);
+      const j = await readJsonTolerant(res, ep.name);
+      if(j === null) throw new Error('空 body 或無 JSON');
+      // 鎖定第一個成功的端點（若尚未鎖定）
+      if(!finmindEndpoint){
+        finmindEndpoint = ep;
+        console.log(`代理端點鎖定：${ep.name}`);
+      }
       return j;
     }catch(e){
       tried.push(`${ep.name}:${e.message}`);
@@ -1909,11 +1930,13 @@ async function refreshPrices(silent=false){
     return { ok: STOCKS.length, fail: 0, embedded: true };
   }
   const status = getMarketStatus();
-  // 首次一定要先抓 FinMind 建立 trend/hist
+  // 首次一定要先抓 EOD 建立 trend/hist；成功後標記，避免 60 秒內再抓一次
+  let justFetchedEod = false;
   if(!initialHistoryFetched){
     if(!silent) toast('📡 首次連線：抓取歷史資料建立策略...');
     const r = await refreshFromFinMind(silent);
     initialHistoryFetched = (r.ok > 0);
+    justFetchedEod = (r.ok > 0);
   }
   // 盤中或盤前：用 MIS 拿即時價
   if(status === 'open' || status === 'pre-open'){
@@ -1947,6 +1970,11 @@ async function refreshPrices(silent=false){
     }
   }
   // 收盤 / 假日 / MIS 全失敗 → TWSE OpenAPI 日線
+  // 若剛才初始 EOD 就拉成功，盤中這次就不用再拉一次 4MB 大檔
+  if(justFetchedEod){
+    updateMarketBadge();
+    return { ok: STOCKS.filter(s=>s.real).length, fail: 0, skipped: true };
+  }
   const fm = await refreshFromFinMind(silent);
   updateMarketBadge();
   return fm;
