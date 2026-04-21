@@ -1812,6 +1812,9 @@ function saveStockMarket(){
 
 // 判斷台股市場狀態
 // 台股：週一至週五 09:00-13:30（台北時區），以台北時間判讀
+// 重要：MIS 在 13:30 收盤後一直到當日 23:59 仍保留「今日最終收盤」，
+//       而 TWSE OpenAPI STOCK_DAY_ALL 要到 19:00-20:00 才會發布當日 EOD。
+//       所以 13:30-23:59 這段「post-close」應優先走 MIS 拿今日收盤，而不是 EOD（會抓到昨日）。
 function getMarketStatus(){
   const now = new Date();
   const fmt = new Intl.DateTimeFormat('en-US', {
@@ -1824,9 +1827,10 @@ function getMarketStatus(){
   const minute = parseInt(parts.find(p=>p.type==='minute').value, 10);
   const m = hour*60 + minute;
   if(weekday === 'Sat' || weekday === 'Sun') return 'holiday';
-  if(m >= 9*60 && m <= 13*60 + 30) return 'open';      // 盤中
-  if(m >= 8*60 + 30 && m < 9*60) return 'pre-open';    // 盤前試撮
-  return 'closed';                                      // 盤後
+  if(m >= 9*60 && m <= 13*60 + 30) return 'open';       // 盤中 09:00-13:30
+  if(m >= 8*60 + 30 && m < 9*60) return 'pre-open';     // 盤前試撮 08:30-09:00
+  if(m > 13*60 + 30) return 'post-close';               // 盤後 13:30-23:59（MIS 仍有今日收盤）
+  return 'closed';                                       // 00:00-08:30（MIS 可能已清空）
 }
 
 // 更新頂端市場狀態列 UI
@@ -1836,10 +1840,11 @@ function updateMarketBadge(){
   if(!dot || !text) return;
   const s = getMarketStatus();
   const map = {
-    'open':     { color:'#22c55e', label:'🟢 盤中 · 即時報價（15 秒延遲）' },
-    'pre-open': { color:'#facc15', label:'🟡 盤前試撮 · 08:30-09:00' },
-    'closed':   { color:'#ef4444', label:'🔴 已收盤 · 顯示最近一日 EOD' },
-    'holiday':  { color:'#6b7ba3', label:'⚪ 非交易日' }
+    'open':       { color:'#22c55e', label:'🟢 盤中 · 即時報價（15 秒延遲）' },
+    'pre-open':   { color:'#facc15', label:'🟡 盤前試撮 · 08:30-09:00' },
+    'post-close': { color:'#fb923c', label:'🟠 盤後 · 顯示今日最終收盤' },
+    'closed':     { color:'#ef4444', label:'🔴 已收盤 · 顯示最近一日 EOD' },
+    'holiday':    { color:'#6b7ba3', label:'⚪ 非交易日' }
   };
   const cfg = map[s] || map.closed;
   dot.style.background = cfg.color;
@@ -1938,8 +1943,8 @@ async function refreshPrices(silent=false){
     initialHistoryFetched = (r.ok > 0);
     justFetchedEod = (r.ok > 0);
   }
-  // 盤中或盤前：用 MIS 拿即時價
-  if(status === 'open' || status === 'pre-open'){
+  // 盤中 / 盤前 / 盤後：都用 MIS 拿今日報價（MIS 收盤後仍保留當日最終收盤至午夜）
+  if(status === 'open' || status === 'pre-open' || status === 'post-close'){
     try{
       const mis = await refreshFromMis();
       if(mis.ok > 0){
@@ -1948,10 +1953,13 @@ async function refreshPrices(silent=false){
         finmindLastUpdate = new Date();
         const srcEl = document.getElementById('snapshotSource');
         const dateEl = document.getElementById('snapshotDate');
-        if(srcEl) srcEl.textContent = '· TWSE MIS 即時';
+        const srcLabel = status === 'post-close'
+          ? '· TWSE MIS 今日收盤'
+          : '· TWSE MIS 即時（15 秒延遲）';
+        if(srcEl) srcEl.textContent = srcLabel;
         if(dateEl){
-          const first = STOCKS.find(s=>s.live && s.misTime);
-          dateEl.textContent = first ? `即時 ${first.misTime}` : new Date().toISOString().slice(0,10);
+          const first = STOCKS.find(s=>s.live && s.date);
+          dateEl.textContent = first ? first.date : new Date().toISOString().slice(0,10);
         }
         updateMarketBadge();
         updateDataSourceBadge(mis.ok, mis.fail);
@@ -1960,7 +1968,10 @@ async function refreshPrices(silent=false){
           const pxEl = document.getElementById('dPx');
           if(pxEl){ pxEl.textContent = currentStock.px.toFixed(2); pxEl.className = 'd-px '+(u?'up':'down'); }
         }
-        if(!silent) toast(`🟢 即時 ${mis.ok}/${STOCKS.length}（15 秒延遲）`);
+        if(!silent){
+          const tag = status === 'post-close' ? '🟠 盤後' : '🟢 即時';
+          toast(`${tag} ${mis.ok}/${STOCKS.length}`);
+        }
         return mis;
       }
       if(!silent) toast('MIS 無資料，改抓 TWSE 日線');
@@ -2197,7 +2208,10 @@ if(location.protocol !== 'file:'){
   setInterval(()=>{
     updateMarketBadge();
     const st = getMarketStatus();
-    const interval = (st === 'open' || st === 'pre-open') ? 30*1000 : 10*60*1000;
+    // open/pre-open: 30 秒；post-close: 1 分鐘；其他: 10 分鐘
+    const interval = (st === 'open' || st === 'pre-open') ? 30*1000
+                   : (st === 'post-close') ? 60*1000
+                   : 10*60*1000;
     if(Date.now() - lastAutoFetch >= interval){
       lastAutoFetch = Date.now();
       refreshPrices(true);
