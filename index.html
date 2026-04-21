@@ -25,6 +25,7 @@
   html,body{height:100%;overscroll-behavior:none}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Helvetica Neue",Arial,sans-serif;
+    font-size:17px;
     background:#05070f;color:var(--text);
     display:flex;align-items:center;justify-content:center;
     min-height:100vh;min-height:100dvh;
@@ -90,9 +91,9 @@
     flex:0 0 auto;min-width:108px;background:var(--card);border:1px solid var(--line);
     border-radius:12px;padding:8px 10px;
   }
-  .mchip .n{font-size:12px;color:var(--sub)}
-  .mchip .v{font-size:16px;font-weight:700;margin-top:2px}
-  .mchip .c{font-size:12px;margin-top:1px}
+  .mchip .n{font-size:13px;color:var(--sub)}
+  .mchip .v{font-size:18px;font-weight:700;margin-top:2px}
+  .mchip .c{font-size:13px;margin-top:1px}
   .up{color:var(--up)} .down{color:var(--down)}
 
   .screen{
@@ -108,12 +109,12 @@
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
   .section-title{display:flex;align-items:center;justify-content:space-between;margin:12px 2px 8px}
-  .section-title .t{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
-  .section-title .dot{width:4px;height:16px;background:var(--accent);border-radius:2px}
-  .section-title .more{font-size:13px;color:var(--sub);cursor:pointer}
+  .section-title .t{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .section-title .dot{width:4px;height:18px;background:var(--accent);border-radius:2px}
+  .section-title .more{font-size:14px;color:var(--sub);cursor:pointer}
 
   .watch{background:var(--card);border-radius:16px;border:1px solid var(--line);overflow:hidden}
-  .w-head{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:10px 12px;font-size:13px;color:var(--sub);border-bottom:1px solid var(--line);background:var(--card2)}
+  .w-head{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:10px 12px;font-size:14px;color:var(--sub);border-bottom:1px solid var(--line);background:var(--card2)}
   /* === 分類 chip bar === */
   .cat-chips{display:flex;gap:6px;overflow-x:auto;margin:0 -4px 10px;padding:2px 4px 8px;scrollbar-width:none}
   .cat-chips::-webkit-scrollbar{display:none}
@@ -130,7 +131,7 @@
   @keyframes modalFade{from{opacity:0}to{opacity:1}}
   .modal{width:100%;max-width:420px;background:var(--card);border-radius:20px 20px 0 0;border:1px solid var(--line);border-bottom:none;max-height:85vh;display:flex;flex-direction:column;animation:modalSlide .25s ease}
   @keyframes modalSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  .modal-title{font-size:17px;font-weight:700;padding:16px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .modal-title{font-size:19px;font-weight:700;padding:16px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
   .modal-title .x{color:var(--sub);cursor:pointer;padding:4px 8px;font-size:22px;line-height:1;border-radius:6px}
   .modal-title .x:active{background:var(--card2)}
   .modal-body{flex:1;overflow-y:auto;padding:12px 16px}
@@ -164,14 +165,14 @@
   .row-menu:active{background:var(--card2);color:var(--accent)}
   .w-row.with-menu{grid-template-columns:1.6fr 1fr 1fr 0.6fr 30px}
   .w-head.with-menu{grid-template-columns:1.6fr 1fr 1fr 0.6fr 30px}
-  .w-row{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:16px 12px;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s;min-height:64px}
+  .w-row{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:17px 12px;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s;min-height:68px}
   .w-row:last-child{border-bottom:none}
   .w-row:active{background:var(--card2)}
   .w-row .name{display:flex;flex-direction:column}
-  .w-row .name .nm{font-size:16px;font-weight:700}
-  .w-row .name .id{font-size:13px;color:var(--sub)}
-  .w-row .price{font-size:17px;font-weight:700;text-align:right}
-  .w-row .pct{font-size:14px;text-align:right}
+  .w-row .name .nm{font-size:18px;font-weight:700}
+  .w-row .name .id{font-size:14px;color:var(--sub)}
+  .w-row .price{font-size:20px;font-weight:700;text-align:right}
+  .w-row .pct{font-size:15px;text-align:right}
   .badge{font-size:10px;padding:3px 7px;border-radius:6px;display:inline-block;background:rgba(255,210,74,.15);color:var(--accent);border:1px solid rgba(255,210,74,.3)}
   .badge.sell{background:rgba(52,211,153,.12);color:var(--sell);border-color:rgba(52,211,153,.3)}
   .badge.buy{background:rgba(239,68,68,.12);color:var(--buy);border-color:rgba(239,68,68,.3)}
@@ -179,13 +180,13 @@
   .sig-card{background:linear-gradient(135deg,#1d2844 0%, #111a33 100%);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer}
   .sig-card:active{transform:scale(0.99)}
   .sig-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-  .sig-title{font-size:17px;font-weight:700}
-  .sig-sub{font-size:13px;color:var(--sub);margin-top:2px}
-  .sig-tag{font-size:13px;padding:6px 10px;border-radius:8px;font-weight:700;white-space:nowrap}
+  .sig-title{font-size:19px;font-weight:700}
+  .sig-sub{font-size:14px;color:var(--sub);margin-top:2px}
+  .sig-tag{font-size:14px;padding:7px 11px;border-radius:8px;font-weight:700;white-space:nowrap}
   .sig-body{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
   .sig-kv{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:8px}
-  .sig-kv .k{font-size:12px;color:var(--sub)}
-  .sig-kv .v{font-size:15px;font-weight:700;margin-top:2px}
+  .sig-kv .k{font-size:13px;color:var(--sub)}
+  .sig-kv .v{font-size:17px;font-weight:700;margin-top:2px}
   .sig-rr{margin-top:10px;height:6px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;display:flex}
   .sig-rr .loss{background:var(--down);height:100%}
   .sig-rr .gain{background:var(--up);height:100%}
@@ -202,7 +203,7 @@
   }
   .tab{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    color:var(--sub);font-size:12px;gap:2px;cursor:pointer;
+    color:var(--sub);font-size:13px;gap:3px;cursor:pointer;
     padding-top:10px;height:72px;
   }
   .tab.active{color:var(--accent)}
@@ -214,14 +215,14 @@
   .d-back{display:flex;align-items:center;gap:6px;color:var(--sub);font-size:14px;cursor:pointer;margin-bottom:8px;padding:6px 0;min-height:36px}
   .d-back:active{color:var(--text)}
   .d-top{display:flex;justify-content:space-between;align-items:flex-end}
-  .d-top .nm{font-size:22px;font-weight:800}
-  .d-top .id{color:var(--sub);font-size:14px;margin-left:8px}
-  .d-px{font-size:32px;font-weight:800;line-height:1}
-  .d-pct{font-size:15px;font-weight:700}
+  .d-top .nm{font-size:26px;font-weight:800}
+  .d-top .id{color:var(--sub);font-size:16px;margin-left:8px}
+  .d-px{font-size:38px;font-weight:800;line-height:1}
+  .d-pct{font-size:17px;font-weight:700}
   .d-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px;padding:10px;background:var(--card);border-radius:12px;border:1px solid var(--line)}
   .d-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
-  .d-stat .k{font-size:12px;color:var(--sub)}
-  .d-stat .v{font-size:15px;font-weight:700}
+  .d-stat .k{font-size:13px;color:var(--sub)}
+  .d-stat .v{font-size:17px;font-weight:700}
   .tf-bar{display:flex;gap:6px;margin:12px 0 8px}
   .tf{flex:1;text-align:center;padding:9px 0;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--sub)}
   .tf.active{background:var(--accent);color:#1a1200;border-color:var(--accent);font-weight:700}
@@ -236,7 +237,7 @@
   .strategy-panel{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
   .sp-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px}
   .sp-title .dot{width:4px;height:14px;background:var(--accent);border-radius:2px}
-  .sp-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:15px}
+  .sp-item{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:17px}
   .sp-item:last-child{border-bottom:none}
   .sp-item .k{color:var(--sub)}
   .sp-item .v{font-weight:700}
@@ -272,13 +273,13 @@
   .prof-t{font-size:15px;font-weight:700}
   .prof-s{font-size:11px;color:var(--sub);margin-top:2px}
   .menu{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}
-  .m-row{padding:16px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);font-size:16px;cursor:pointer;min-height:58px}
+  .m-row{padding:18px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);font-size:18px;cursor:pointer;min-height:62px}
   .m-row:last-child{border-bottom:none}
   .m-row:active{background:var(--card2)}
   .m-row .r{color:var(--sub);font-size:12px}
 
   .segtabs{display:flex;gap:6px;margin:8px 0 10px;background:var(--card);padding:4px;border-radius:10px;border:1px solid var(--line)}
-  .seg{flex:1;text-align:center;padding:11px 0;font-size:14px;border-radius:8px;color:var(--sub);cursor:pointer;font-weight:600}
+  .seg{flex:1;text-align:center;padding:12px 0;font-size:15px;border-radius:8px;color:var(--sub);cursor:pointer;font-weight:600}
   .seg.active{background:var(--accent);color:#1a1200}
 
   .strategy-hero{background:linear-gradient(135deg,#3a2810 0%, #1a1228 100%);border:1px solid #665028;border-radius:16px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
@@ -1128,7 +1129,12 @@ function renderCategoryChips(){
 }
 
 /* === Modal：加股票 === */
+let _addPending = null;
+let _addPendingTags = [];
+
 function openAddStockModal(){
+  _addPending = null;
+  _addPendingTags = [];
   document.getElementById('stockSearchInput').value = '';
   renderStockSearchList();
   document.getElementById('modalAddStock').style.display = 'flex';
@@ -1140,7 +1146,6 @@ function renderStockSearchList(){
   let customMatch = null;
   if(q){
     list = STOCK_MASTER.filter(s => s.id.toLowerCase().includes(q) || s.name.toLowerCase().includes(q));
-    // 如果輸入是 4 位數代碼但不在 master 中，給一個「手動加入」選項
     if(/^\d{4,6}[A-Z]?$/i.test(q) && !list.find(s=>s.id.toLowerCase()===q)){
       customMatch = { id: q.toUpperCase(), name: '（自訂代碼）', industry: 'other', custom: true };
     }
@@ -1153,26 +1158,85 @@ function renderStockSearchList(){
   if(customMatch) rows.push(customMatch);
   list.forEach(s => rows.push(s));
   if(rows.length === 0){
-    el.innerHTML = `<div style="text-align:center;color:var(--sub);padding:30px 0;font-size:13px">🔍 找不到「${q}」<br><br>可直接輸入 4 位數股票代碼<br>(例：2330、0050、00878)</div>`;
+    el.innerHTML = `<div style="text-align:center;color:var(--sub);padding:30px 0;font-size:15px">🔍 找不到「${q}」<br><br>可直接輸入 4 位數股票代碼<br>(例：2330、0050、00878)</div>`;
     return;
   }
+  const customCats = watchlist.customCats || [];
   el.innerHTML = rows.map(s=>{
     const exists = inList(s.id);
-    const badge = exists ? '✓ 已加入' : '＋ 加入';
-    const clickFn = exists ? '' : `onclick="quickAddStock('${s.id}','${s.name.replace(/'/g,'\\\'')}')"`;
-    const cls = exists ? 'search-row in-list' : 'search-row';
+    const isPending = _addPending === s.id;
     const sub = s.custom ? '手動輸入代碼（自動分類為：其他）' : industryLabel(s.industry) + ' · ' + s.id;
-    return `<div class="${cls}" ${clickFn}>
+
+    if(exists){
+      return `<div class="search-row in-list">
+        <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
+        <div class="add">✓ 已加入</div>
+      </div>`;
+    }
+
+    if(isPending){
+      // 展開 tag 選擇器
+      const tagHtml = customCats.length === 0
+        ? `<div style="font-size:13px;color:var(--sub);padding:4px 0">（尚無自訂分類，將加入「全部」）</div>`
+        : customCats.map(c=>{
+            const on = _addPendingTags.includes(c.id);
+            const style = on
+              ? `border-color:${c.color};color:${c.color};background:${c.color}22`
+              : '';
+            return `<span class="tag-chip ${on?'on':''}" style="${style}" onclick="togglePendingTag('${c.id}')">${on?'✓ ':''}${c.name}</span>`;
+          }).join('');
+      return `<div class="search-row" style="flex-direction:column;align-items:flex-start;gap:10px;background:var(--card2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+          <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
+          <button onclick="cancelPendingAdd()" style="background:none;border:none;color:var(--sub);font-size:20px;cursor:pointer;padding:0 4px;line-height:1">×</button>
+        </div>
+        ${customCats.length > 0 ? `<div style="font-size:13px;color:var(--sub)">選擇要加入的分類（可多選，不選則加入全部）：</div>` : ''}
+        <div style="display:flex;flex-wrap:wrap">${tagHtml}</div>
+        <button onclick="confirmAddStock()" style="width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">✓ 確認加入</button>
+      </div>`;
+    }
+
+    return `<div class="search-row" onclick="selectStockToAdd('${s.id}')">
       <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
-      <div class="add">${badge}</div>
+      <div class="add">＋ 加入</div>
     </div>`;
   }).join('');
 }
-function quickAddStock(id, name){
-  if(addStockToWatchlist(id)){
+function selectStockToAdd(id){
+  if(watchlist.stocks.some(w=>w.id===id)){ toast(`ℹ️ ${id} 已在自選股中`); return; }
+  const customCats = watchlist.customCats || [];
+  if(customCats.length === 0){
+    if(addStockToWatchlist(id)){ setTimeout(closeAllModals, 400); }
+    return;
+  }
+  _addPending = id;
+  _addPendingTags = [];
+  renderStockSearchList();
+  // 捲動到展開的列
+  setTimeout(()=>{
+    const el = document.getElementById('stockSearchList');
+    if(el) el.scrollTop = 0;
+  }, 50);
+}
+function togglePendingTag(catId){
+  const i = _addPendingTags.indexOf(catId);
+  if(i >= 0) _addPendingTags.splice(i, 1);
+  else _addPendingTags.push(catId);
+  renderStockSearchList();
+}
+function confirmAddStock(){
+  if(!_addPending) return;
+  if(addStockToWatchlist(_addPending, _addPendingTags)){
+    _addPending = null;
+    _addPendingTags = [];
     renderStockSearchList();
     setTimeout(closeAllModals, 400);
   }
+}
+function cancelPendingAdd(){
+  _addPending = null;
+  _addPendingTags = [];
+  renderStockSearchList();
 }
 
 /* === Modal：管理分類 === */
@@ -1254,6 +1318,8 @@ function closeAllModals(){
     if(el) el.style.display = 'none';
   });
   _currentMenuStock = null;
+  _addPending = null;
+  _addPendingTags = [];
 }
 function renderRanks(){
   const up = [...STOCKS].sort((a,b)=>b.pct-a.pct).slice(0,5);
@@ -1679,6 +1745,7 @@ async function readJsonTolerant(res, epName){
 }
 
 // 通用代理嘗試 + 端點鎖定；locked 失敗時自動 fallback
+// 每個端點最多等 8 秒，超時直接跳下一個
 async function proxyFetchJson(rawUrl, label){
   const order = finmindEndpoint
     ? [finmindEndpoint, ...FINMIND_ENDPOINTS.filter(e=>e.name!==finmindEndpoint.name)]
@@ -1686,21 +1753,29 @@ async function proxyFetchJson(rawUrl, label){
   let lastErr;
   const tried = [];
   for(const ep of order){
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 8000);
     try{
       if(window.updateProgress) window.updateProgress(`${ep.name} (${label})...`);
-      const res = await fetch(ep.build(rawUrl), { cache:'no-cache' });
+      const res = await fetch(ep.build(rawUrl), { cache:'no-cache', signal: ctrl.signal });
+      clearTimeout(timer);
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
       const j = await readJsonTolerant(res, ep.name);
       if(j === null) throw new Error('空 body 或無 JSON');
-      // 鎖定第一個成功的端點（若尚未鎖定）
       if(!finmindEndpoint){
         finmindEndpoint = ep;
         console.log(`代理端點鎖定：${ep.name}`);
       }
       return j;
     }catch(e){
-      tried.push(`${ep.name}:${e.message}`);
+      clearTimeout(timer);
+      const msg = e.name === 'AbortError' ? '超時 8s' : e.message;
+      tried.push(`${ep.name}:${msg}`);
       lastErr = e;
+      // 鎖定端點失敗時解除鎖定，讓下輪重選
+      if(finmindEndpoint && ep.name === finmindEndpoint.name){
+        finmindEndpoint = null;
+      }
     }
   }
   const err = new Error(tried.join(' | '));
@@ -1868,13 +1943,19 @@ async function twseMisFetchBatch(codes){
   let lastErr;
   for(const ep of order){
     if(ep.name === '直連') continue; // MIS 沒 CORS，直連必敗
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 8000);
     try{
-      const res = await fetch(ep.build(raw), { cache:'no-cache' });
+      const res = await fetch(ep.build(raw), { cache:'no-cache', signal: ctrl.signal });
+      clearTimeout(timer);
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
       const j = await res.json();
       if(!j || !Array.isArray(j.msgArray)) throw new Error('MIS 回傳格式錯誤');
       return j.msgArray;
-    }catch(e){ lastErr = e; }
+    }catch(e){
+      clearTimeout(timer);
+      lastErr = e.name === 'AbortError' ? new Error('MIS 超時 8s') : e;
+    }
   }
   throw lastErr || new Error('MIS 代理全失敗');
 }
@@ -1926,9 +2007,20 @@ async function refreshFromMis(){
 
 // 歷史資料（trend/hist）是否已初始化過
 let initialHistoryFetched = false;
+// 防止並發重複 fetch
+let _refreshLock = false;
 
 // 統一刷新入口：根據市場狀態選擇 MIS 或 FinMind
 async function refreshPrices(silent=false){
+  if(_refreshLock){
+    if(!silent) toast('⏳ 更新中，請稍候...');
+    return { ok:0, fail:0, busy:true };
+  }
+  _refreshLock = true;
+  try{ return await _doRefreshPrices(silent); }
+  finally{ _refreshLock = false; }
+}
+async function _doRefreshPrices(silent=false){
   if(location.protocol === 'file:'){
     if(!silent) toast(`📦 本機模式 · 使用嵌入資料`);
     updateMarketBadge();
@@ -2009,6 +2101,7 @@ window.updateProgress = function(msg){
 
 // ─── 一鍵更新：頂端綠色按鈕 ───
 async function oneClickUpdate(){
+  if(_refreshLock){ toast('⏳ 更新中，請稍候...'); return; }
   const btn = document.getElementById('btnOneClickUpdate');
   if(btn){ btn.disabled = true; btn.style.opacity = 0.6; btn.textContent = '⏳ 更新中...'; }
   try{
@@ -2016,8 +2109,8 @@ async function oneClickUpdate(){
       toast('⚠️ 本機 file:// 無法連線，請用 GitHub Pages 網址開啟');
       return;
     }
-    // 強制解鎖 endpoint，這樣會重新掃三個端點挑能通的
-    finmindEndpoint = null;
+    // 只有上次失敗才重置端點，否則保留已知好端點以加快速度
+    if(finmindLastError) finmindEndpoint = null;
     const { ok, fail } = await refreshPrices(false);
     const el = document.getElementById('snapshotLastUpdate');
     if(el){
@@ -2039,25 +2132,28 @@ async function refreshFromFinMind(silent=false){
     return { ok: STOCKS.length, fail: 0, embedded: true };
   }
   window.updateProgress('準備連線 TWSE OpenAPI...');
-  if(!silent) toast('📡 連線 TWSE + TPEX（一次抓全市場）...');
+  if(!silent) toast('📡 連線 TWSE + TPEX（並行抓取）...');
   let ok=0, fail=0;
   const errs = [];
 
-  // 1) 一次抓上市 + 上櫃
+  // 1) 並行抓上市 + 上櫃（同時發出，速度約快一倍）
   let tseMap = {}, tpexMap = {};
-  try{
-    window.updateProgress('抓 TWSE 全上市日成交...');
-    tseMap = await fetchTwseEodAll();
-  }catch(e){
-    console.warn('TWSE 失敗：', e.message);
-    errs.push('TWSE:'+e.message);
+  window.updateProgress('並行抓取 TWSE + TPEX...');
+  const [tseResult, tpexResult] = await Promise.allSettled([
+    fetchTwseEodAll(),
+    fetchTpexEodAll()
+  ]);
+  if(tseResult.status === 'fulfilled'){
+    tseMap = tseResult.value;
+  }else{
+    console.warn('TWSE 失敗：', tseResult.reason.message);
+    errs.push('TWSE:'+tseResult.reason.message);
   }
-  try{
-    window.updateProgress('抓 TPEX 全上櫃日成交...');
-    tpexMap = await fetchTpexEodAll();
-  }catch(e){
-    console.warn('TPEX 失敗：', e.message);
-    errs.push('TPEX:'+e.message);
+  if(tpexResult.status === 'fulfilled'){
+    tpexMap = tpexResult.value;
+  }else{
+    console.warn('TPEX 失敗：', tpexResult.reason.message);
+    errs.push('TPEX:'+tpexResult.reason.message);
   }
   const allMap = Object.assign({}, tseMap, tpexMap);
   const codeCount = Object.keys(allMap).length;
@@ -2202,21 +2298,20 @@ async function finmindStartup(){
 }
 setTimeout(finmindStartup, 300);
 
-// 自動刷新策略：盤中每 30 秒抓 MIS 即時；盤後每 10 分鐘抓 FinMind EOD
+// 自動刷新策略：盤中每 25 秒抓 MIS 即時；盤後每 3 分鐘確認一次；其他每 15 分鐘
 if(location.protocol !== 'file:'){
   let lastAutoFetch = Date.now();
   setInterval(()=>{
     updateMarketBadge();
     const st = getMarketStatus();
-    // open/pre-open: 30 秒；post-close: 1 分鐘；其他: 10 分鐘
-    const interval = (st === 'open' || st === 'pre-open') ? 30*1000
-                   : (st === 'post-close') ? 60*1000
-                   : 10*60*1000;
+    const interval = (st === 'open' || st === 'pre-open') ? 25*1000
+                   : (st === 'post-close') ? 3*60*1000
+                   : 15*60*1000;
     if(Date.now() - lastAutoFetch >= interval){
       lastAutoFetch = Date.now();
       refreshPrices(true);
     }
-  }, 15*1000);
+  }, 10*1000);
 }
 
 /* 首次開啟提示可安裝（僅在非 standalone 模式） */
