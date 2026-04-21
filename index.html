@@ -335,7 +335,7 @@
         <span id="marketStatusDot" style="width:8px;height:8px;border-radius:50%;background:#6b7ba3;display:inline-block"></span>
         <span id="marketStatusText" style="color:#9be8b5">偵測中...</span>
       </div>
-      <div>📦 <b id="snapshotDate" style="color:#22c55e">2026-04-20</b> <span id="snapshotSource" style="color:#6b7ba3">· FinMind</span></div>
+      <div>📦 <b id="snapshotDate" style="color:#22c55e">2026-04-20</b> <span id="snapshotSource" style="color:#6b7ba3">· TWSE OpenAPI</span></div>
       <div id="snapshotLastUpdate" style="color:#6b7ba3;font-size:10px;margin-top:2px">尚未刷新</div>
     </div>
     <button id="btnOneClickUpdate" onclick="oneClickUpdate()" style="flex:0 0 auto;background:linear-gradient(135deg,#22c55e,#059669);color:#fff;border:none;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(34,197,94,.4);white-space:nowrap">🔄 一鍵更新</button>
@@ -1601,8 +1601,10 @@ document.addEventListener('touchend', e=>{
   lastTouch = now;
 }, {passive:false});
 
-/* ===== FinMind 真實資料串接（三層 CORS fallback） ===== */
+/* ===== v9：改用 TWSE OpenAPI + TPEX OpenAPI（免費無限制，一次抓全市場）===== */
+// codetabs 為主要 CORS 代理；corsproxy.io/allorigins 作為備援
 const FINMIND_ENDPOINTS = [
+  { name: 'codetabs',  build: u => 'https://api.codetabs.com/v1/proxy/?quest=' + u },
   { name: '直連',      build: u => u },
   { name: 'corsproxy', build: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
   { name: 'allorigins',build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) }
@@ -1657,28 +1659,24 @@ function computeSig(trend, pct){
   return '觀';
 }
 
-async function finmindTry(url, label){
-  const res = await fetch(url, { cache:'no-cache' });
-  if(!res.ok) throw new Error(`${label} HTTP ${res.status}`);
-  const j = await res.json();
-  if(j.status !== 200) throw new Error(`${label} ${j.msg||'非 200'}`);
-  return j.data || [];
-}
-
-async function finmindFetch(code, start, end){
-  const raw = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${code}&start_date=${start}&end_date=${end}`;
+// 通用代理嘗試 + 端點鎖定
+async function proxyFetchJson(rawUrl, label){
   if(finmindEndpoint){
-    return await finmindTry(finmindEndpoint.build(raw), finmindEndpoint.name);
+    const res = await fetch(finmindEndpoint.build(rawUrl), { cache:'no-cache' });
+    if(!res.ok) throw new Error(`${finmindEndpoint.name} HTTP ${res.status}`);
+    return await res.json();
   }
   let lastErr;
   const tried = [];
   for(const ep of FINMIND_ENDPOINTS){
     try{
-      if(window.updateProgress) window.updateProgress(`測試 ${ep.name}...`);
-      const data = await finmindTry(ep.build(raw), ep.name);
+      if(window.updateProgress) window.updateProgress(`測試 ${ep.name} (${label})...`);
+      const res = await fetch(ep.build(rawUrl), { cache:'no-cache' });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const j = await res.json();
       finmindEndpoint = ep;
-      console.log(`FinMind 端點鎖定：${ep.name}`);
-      return data;
+      console.log(`代理端點鎖定：${ep.name}`);
+      return j;
     }catch(e){
       tried.push(`${ep.name}:${e.message}`);
       lastErr = e;
@@ -1687,6 +1685,99 @@ async function finmindFetch(code, start, end){
   const err = new Error(tried.join(' | '));
   err.tried = tried;
   throw err;
+}
+
+// ROC 日期 "1150421" → "2026-04-21"（民國+1911）
+function rocToIso(roc){
+  if(!roc) return null;
+  const s = String(roc).trim();
+  if(s.length < 5) return null;
+  // 可能是 "1150421" 或 "115/04/21"
+  const clean = s.replace(/\//g,'');
+  const y = parseInt(clean.slice(0, clean.length-4), 10) + 1911;
+  const m = clean.slice(-4, -2);
+  const d = clean.slice(-2);
+  return `${y}-${m}-${d}`;
+}
+
+// 一次抓 TWSE 全上市個股日成交資訊（約 2000+ 檔）
+// https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL
+async function fetchTwseEodAll(){
+  const raw = 'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL';
+  const j = await proxyFetchJson(raw, 'TWSE');
+  if(!Array.isArray(j)) throw new Error('TWSE 回傳格式非陣列');
+  const map = {};
+  const today = new Date().toISOString().slice(0,10);
+  for(const r of j){
+    const code = r.Code;
+    if(!code) continue;
+    const close = parseFloat(r.ClosingPrice);
+    if(!isFinite(close) || close <= 0) continue; // 無成交
+    const open = parseFloat(r.OpeningPrice) || close;
+    const high = parseFloat(r.HighestPrice) || close;
+    const low  = parseFloat(r.LowestPrice)  || close;
+    const ch   = parseFloat(r.Change) || 0;
+    const vol  = parseInt(r.TradeVolume, 10) || 0;
+    map[code] = {
+      name: r.Name, close, open, high, low, ch,
+      vol: Math.round(vol/1000), // 轉張
+      date: today, market: 'tse'
+    };
+  }
+  return map;
+}
+
+// 一次抓 TPEX 全上櫃日收盤
+// https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes
+async function fetchTpexEodAll(){
+  const raw = 'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes';
+  const j = await proxyFetchJson(raw, 'TPEX');
+  if(!Array.isArray(j)) throw new Error('TPEX 回傳格式非陣列');
+  const map = {};
+  for(const r of j){
+    const code = r.SecuritiesCompanyCode || r.Code;
+    if(!code) continue;
+    const close = parseFloat(r.Close || r.ClosingPrice);
+    if(!isFinite(close) || close <= 0) continue;
+    const open = parseFloat(r.Open || r.OpeningPrice) || close;
+    const high = parseFloat(r.High || r.HighestPrice) || close;
+    const low  = parseFloat(r.Low  || r.LowestPrice)  || close;
+    const ch   = parseFloat(r.Change) || 0;
+    const vol  = parseInt(r.TradingShares || r.TradeVolume, 10) || 0;
+    const dateIso = rocToIso(r.Date) || new Date().toISOString().slice(0,10);
+    map[code] = {
+      name: r.CompanyName || r.Name, close, open, high, low, ch,
+      vol: Math.round(vol/1000),
+      date: dateIso, market: 'otc'
+    };
+  }
+  return map;
+}
+
+// 每日收盤累積：{ "YYYY-MM-DD": { "2330": close, "2454": close, ... } }
+// 用來補足 MA20 所需的 20 天歷史（單次 TWSE OpenAPI 僅給當日）
+const DAILY_HIST = (()=>{
+  try{ return JSON.parse(localStorage.getItem('twstock_daily_hist_v1')||'{}'); }catch(e){ return {}; }
+})();
+function saveDailyHist(){
+  try{
+    // 只保留最近 45 天，避免 localStorage 爆掉
+    const keys = Object.keys(DAILY_HIST).sort();
+    if(keys.length > 45){
+      for(const k of keys.slice(0, keys.length-45)) delete DAILY_HIST[k];
+    }
+    localStorage.setItem('twstock_daily_hist_v1', JSON.stringify(DAILY_HIST));
+  }catch(e){}
+}
+// 從累積的每日快照合成某檔股票的歷史收盤陣列（依日期升冪）
+function buildHistFromDaily(code){
+  const dates = Object.keys(DAILY_HIST).sort();
+  const closes = [];
+  for(const d of dates){
+    const c = DAILY_HIST[d][code];
+    if(isFinite(c)) closes.push(c);
+  }
+  return closes; // 可能很少（剛開始用），會 fallback 至短期 trend 判定
 }
 
 let finmindLastError = null;
@@ -1849,13 +1940,13 @@ async function refreshPrices(silent=false){
         if(!silent) toast(`🟢 即時 ${mis.ok}/${STOCKS.length}（15 秒延遲）`);
         return mis;
       }
-      if(!silent) toast('MIS 無資料，改抓 FinMind 日線');
+      if(!silent) toast('MIS 無資料，改抓 TWSE 日線');
     }catch(e){
       console.warn('MIS 整批失敗：', e.message);
-      if(!silent) toast(`MIS 失敗（${e.message}），改抓 FinMind`);
+      if(!silent) toast(`MIS 失敗（${e.message}），改抓 TWSE 日線`);
     }
   }
-  // 收盤 / 假日 / MIS 全失敗 → FinMind 日線
+  // 收盤 / 假日 / MIS 全失敗 → TWSE OpenAPI 日線
   const fm = await refreshFromFinMind(silent);
   updateMarketBadge();
   return fm;
@@ -1908,55 +1999,91 @@ async function refreshFromFinMind(silent=false){
     if(!silent) toast(`📦 本機模式 · 使用嵌入資料（截至 ${DATA_SNAPSHOT_DATE}）`);
     return { ok: STOCKS.length, fail: 0, embedded: true };
   }
-  const start = daysAgoStr(45);
-  const end = daysAgoStr(0);
-  window.updateProgress('準備連線 FinMind...');
-  if(!silent) toast('📡 連線 FinMind 中...');
+  window.updateProgress('準備連線 TWSE OpenAPI...');
+  if(!silent) toast('📡 連線 TWSE + TPEX（一次抓全市場）...');
   let ok=0, fail=0;
   const errs = [];
+
+  // 1) 一次抓上市 + 上櫃
+  let tseMap = {}, tpexMap = {};
+  try{
+    window.updateProgress('抓 TWSE 全上市日成交...');
+    tseMap = await fetchTwseEodAll();
+  }catch(e){
+    console.warn('TWSE 失敗：', e.message);
+    errs.push('TWSE:'+e.message);
+  }
+  try{
+    window.updateProgress('抓 TPEX 全上櫃日成交...');
+    tpexMap = await fetchTpexEodAll();
+  }catch(e){
+    console.warn('TPEX 失敗：', e.message);
+    errs.push('TPEX:'+e.message);
+  }
+  const allMap = Object.assign({}, tseMap, tpexMap);
+  const codeCount = Object.keys(allMap).length;
+  if(codeCount === 0){
+    finmindLastError = errs.slice(0,3).join(' · ') || '全市場資料源無回應';
+    finmindLastUpdate = new Date();
+    updateDataSourceBadge(0, STOCKS.length);
+    if(!silent) toast(`❌ TWSE/TPEX 全失敗（${finmindEndpoint?.name||'無代理'}）`);
+    return { ok: 0, fail: STOCKS.length };
+  }
+
+  // 2) 累積每日快照（for MA20 歷史）
+  const today = new Date().toISOString().slice(0,10);
+  if(!DAILY_HIST[today]) DAILY_HIST[today] = {};
+  for(const code in allMap){
+    DAILY_HIST[today][code] = allMap[code].close;
+  }
+  saveDailyHist();
+
+  // 3) 逐檔 mutate STOCKS
   for(const s of STOCKS){
-    window.updateProgress(`抓 ${s.id} ${s.name}... (${ok+fail+1}/${STOCKS.length})`);
-    try{
-      const rows = await finmindFetch(s.id, start, end);
-      if(!rows.length){ fail++; errs.push(`${s.id}:無資料`); continue; }
-      rows.sort((a,b)=>a.date.localeCompare(b.date));
-      const latest = rows[rows.length-1];
-      const prev = rows.length>=2 ? rows[rows.length-2] : null;
-      const ch = prev ? +(latest.close - prev.close).toFixed(2) : 0;
-      const pct = prev && prev.close ? +(ch/prev.close*100).toFixed(2) : 0;
-      // 原地 mutate：所有策略欄位從真實 FinMind 日 K 動態計算（MA5 vs MA20）
-      s.px = +latest.close.toFixed(2);
-      s.ch = ch;
-      s.pct = pct;
-      s.open = +latest.open.toFixed(2);
-      s.high = +latest.max.toFixed(2);
-      s.low  = +latest.min.toFixed(2);
-      s.vol  = Math.round(latest.Trading_Volume/1000); // 轉張
-      s.date = latest.date;
-      // 策略欄位：從最近 20~45 根日 K 計算 MA5 / MA20 判斷趨勢
-      const normRows = rows.map(r=>({close:+r.close, high:+r.max, low:+r.min}));
+    const info = allMap[s.id];
+    if(!info){
+      fail++;
+      errs.push(`${s.id}:市場無收盤`);
+      continue;
+    }
+    // 快取市場歸屬（MIS 可以少拼一邊）
+    stockMarket[s.id] = info.market;
+    const ch  = +(info.ch).toFixed(2);
+    const prev = info.close - info.ch;
+    const pct = prev ? +(ch/prev*100).toFixed(2) : 0;
+    s.px = +info.close.toFixed(2);
+    s.ch = ch;
+    s.pct = pct;
+    s.open = +info.open.toFixed(2);
+    s.high = +info.high.toFixed(2);
+    s.low  = +info.low.toFixed(2);
+    s.vol  = info.vol;
+    s.date = info.date;
+    // 策略欄位：從累積的每日快照合成 MA5/MA20
+    const closes = buildHistFromDaily(s.id);
+    if(closes.length >= 3){
+      const normRows = closes.map(c=>({close:c, high:c, low:c}));
       s.trend = computeTrendFromRows(normRows);
       updateHistFromRows(s.id, normRows);
-      s.sig = computeSig(s.trend, s.pct);
-      s.real = true;
-      s.pending = false;
-      ok++;
-    }catch(e){
-      console.warn(`${s.id} 失敗：`, e.message);
-      errs.push(`${s.id}:${e.message}`);
-      fail++;
+    }else{
+      // 累積天數不足：用今日漲跌簡單推
+      s.trend = pct > 0.5 ? '多頭' : (pct < -0.5 ? '空頭' : '盤整');
     }
-    await new Promise(r=>setTimeout(r, 120));
+    s.sig = computeSig(s.trend, s.pct);
+    s.real = true;
+    s.pending = false;
+    ok++;
   }
+  saveStockMarket();
   finmindLastError = errs.length ? errs.slice(0,3).join(' · ') : null;
   finmindLastUpdate = new Date();
-  // 更新頂端「資料截至」顯示為最新抓到的日期
+  // 更新頂端「資料截至」顯示
   if(ok > 0){
     const latest = STOCKS.filter(s=>s.real && s.date).map(s=>s.date).sort().pop();
     const dateEl = document.getElementById('snapshotDate');
     const srcEl = document.getElementById('snapshotSource');
     if(dateEl && latest){ dateEl.textContent = latest; }
-    if(srcEl){ srcEl.textContent = `FinMind · ${finmindEndpoint?.name||'線上'}`; }
+    if(srcEl){ srcEl.textContent = `TWSE · ${finmindEndpoint?.name||'線上'} · 全市場 ${codeCount}檔`; }
   }
   SIGNALS = buildSignals();
   renderWatch(); renderRanks(); renderSignals(); renderTopBuy();
@@ -1970,7 +2097,7 @@ async function refreshFromFinMind(silent=false){
   }
   updateDataSourceBadge(ok, fail);
   if(!silent){
-    toast(ok>0 ? `✅ 已更新 ${ok}/${STOCKS.length} 檔（${finmindEndpoint?.name||'?'}）`
+    toast(ok>0 ? `✅ 已更新 ${ok}/${STOCKS.length} 檔（TWSE ${finmindEndpoint?.name||'?'}）`
                : `❌ 全部失敗，改用預設資料`);
   }
   return { ok, fail };
@@ -1998,7 +2125,7 @@ function updateDataSourceBadge(ok, fail){
     : '';
   badge.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-      <span style="color:${okColor}">● FinMind · ${ep} · ${ok}/${STOCKS.length}</span>
+      <span style="color:${okColor}">● TWSE · ${ep} · ${ok}/${STOCKS.length}</span>
       <span style="display:flex;gap:6px;align-items:center">
         <span style="color:#9aa7c7">${t}</span>
         <button onclick="event.stopPropagation();refreshPrices(false)" style="background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.4);color:#4fc3f7;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">🔄</button>

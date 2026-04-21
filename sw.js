@@ -1,6 +1,7 @@
 // Service Worker - 台股智慧看盤 PWA
-// v8：加入 TWSE MIS 盤中即時報價 + 市場狀態列（盤中 30 秒自動刷新）
-const CACHE = 'twstock-v8';
+// v9：移除 FinMind（已改付費），改用 TWSE OpenAPI + TPEX OpenAPI + codetabs 代理
+//      一次 fetch 抓全市場 2000+ 檔，免費無限制
+const CACHE = 'twstock-v9';
 const FILES = [
   './',
   './index.html',
@@ -25,7 +26,7 @@ self.addEventListener('activate', e=>{
 self.addEventListener('fetch', e=>{
   if(e.request.method !== 'GET') return;
 
-  // 跨域請求一律不攔截，讓瀏覽器直接走網路（FinMind、CORS 代理等）
+  // 跨域請求一律不攔截，讓瀏覽器直接走網路（TWSE OpenAPI、codetabs 等）
   let reqUrl;
   try { reqUrl = new URL(e.request.url); } catch(err) { return; }
   if(reqUrl.origin !== self.location.origin) return;
