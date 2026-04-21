@@ -1129,17 +1129,20 @@ function renderCategoryChips(){
 }
 
 /* === Modal：加股票 === */
-let _addPending = null;
-let _addPendingTags = [];
+let _addPending = null;      // 待加入的新股票 id
+let _addPendingTags = [];    // 選中的分類
+let _editPending = null;     // 已在清單、待編輯分類的股票 id
 
 function openAddStockModal(){
   _addPending = null;
   _addPendingTags = [];
+  _editPending = null;
   document.getElementById('stockSearchInput').value = '';
   renderStockSearchList();
   document.getElementById('modalAddStock').style.display = 'flex';
   setTimeout(()=>document.getElementById('stockSearchInput').focus(), 100);
 }
+
 function renderStockSearchList(){
   const q = (document.getElementById('stockSearchInput').value||'').trim().toLowerCase();
   let list = STOCK_MASTER;
@@ -1162,37 +1165,58 @@ function renderStockSearchList(){
     return;
   }
   const customCats = watchlist.customCats || [];
+
   el.innerHTML = rows.map(s=>{
     const exists = inList(s.id);
-    const isPending = _addPending === s.id;
     const sub = s.custom ? '手動輸入代碼（自動分類為：其他）' : industryLabel(s.industry) + ' · ' + s.id;
 
+    /* ── 已在清單：展開編輯分類 ── */
     if(exists){
-      return `<div class="search-row in-list">
-        <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
-        <div class="add">✓ 已加入</div>
-      </div>`;
+      const isEditing = _editPending === s.id;
+      if(isEditing && customCats.length > 0){
+        const entry = watchlist.stocks.find(w=>w.id===s.id);
+        const curTags = (entry && entry.tags) || [];
+        const tagHtml = customCats.map(c=>{
+          const on = curTags.includes(c.id);
+          const style = on ? `border-color:${c.color};color:${c.color};background:${c.color}22` : '';
+          return `<span class="tag-chip ${on?'on':''}" style="${style}" onclick="toggleExistingStockTag('${s.id}','${c.id}')">${on?'✓ ':''}${c.name}</span>`;
+        }).join('');
+        return `<div class="search-row in-list" style="flex-direction:column;align-items:flex-start;gap:10px;background:var(--card2)">
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+            <div class="meta"><div class="nm">✓ ${s.name}</div><div class="sub">${sub}</div></div>
+            <button onclick="cancelEditPending()" style="background:none;border:none;color:var(--sub);font-size:22px;cursor:pointer;padding:0 6px;line-height:1">×</button>
+          </div>
+          <div style="font-size:14px;color:var(--sub)">點選分類切換（立即生效）：</div>
+          <div style="display:flex;flex-wrap:wrap">${tagHtml}</div>
+        </div>`;
+      }
+      // 未展開：顯示「設定分類」或「已加入」
+      const btn = customCats.length > 0
+        ? `<div class="add" style="font-size:13px" onclick="event.stopPropagation();selectExistingStockEdit('${s.id}')">🏷️ 設定分類</div>`
+        : `<div class="add">✓ 已加入</div>`;
+      return `<div class="search-row in-list">${
+        `<div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>`
+      }${btn}</div>`;
     }
 
+    /* ── 新股票：選分類後加入 ── */
+    const isPending = _addPending === s.id;
     if(isPending){
-      // 展開 tag 選擇器
       const tagHtml = customCats.length === 0
-        ? `<div style="font-size:13px;color:var(--sub);padding:4px 0">（尚無自訂分類，將加入「全部」）</div>`
+        ? `<div style="font-size:14px;color:var(--sub);padding:4px 0">（尚無自訂分類，將加入「全部」）</div>`
         : customCats.map(c=>{
             const on = _addPendingTags.includes(c.id);
-            const style = on
-              ? `border-color:${c.color};color:${c.color};background:${c.color}22`
-              : '';
+            const style = on ? `border-color:${c.color};color:${c.color};background:${c.color}22` : '';
             return `<span class="tag-chip ${on?'on':''}" style="${style}" onclick="togglePendingTag('${c.id}')">${on?'✓ ':''}${c.name}</span>`;
           }).join('');
       return `<div class="search-row" style="flex-direction:column;align-items:flex-start;gap:10px;background:var(--card2)">
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
           <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
-          <button onclick="cancelPendingAdd()" style="background:none;border:none;color:var(--sub);font-size:20px;cursor:pointer;padding:0 4px;line-height:1">×</button>
+          <button onclick="cancelPendingAdd()" style="background:none;border:none;color:var(--sub);font-size:22px;cursor:pointer;padding:0 6px;line-height:1">×</button>
         </div>
-        ${customCats.length > 0 ? `<div style="font-size:13px;color:var(--sub)">選擇要加入的分類（可多選，不選則加入全部）：</div>` : ''}
+        ${customCats.length > 0 ? `<div style="font-size:14px;color:var(--sub)">選擇分類（可多選，不選則加入「全部」）：</div>` : ''}
         <div style="display:flex;flex-wrap:wrap">${tagHtml}</div>
-        <button onclick="confirmAddStock()" style="width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">✓ 確認加入</button>
+        <button onclick="confirmAddStock()" style="width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;border:none;border-radius:10px;padding:13px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit">✓ 確認加入</button>
       </div>`;
     }
 
@@ -1202,8 +1226,11 @@ function renderStockSearchList(){
     </div>`;
   }).join('');
 }
+
+/* ── 新股票：選分類流程 ── */
 function selectStockToAdd(id){
   if(watchlist.stocks.some(w=>w.id===id)){ toast(`ℹ️ ${id} 已在自選股中`); return; }
+  _editPending = null;
   const customCats = watchlist.customCats || [];
   if(customCats.length === 0){
     if(addStockToWatchlist(id)){ setTimeout(closeAllModals, 400); }
@@ -1212,11 +1239,6 @@ function selectStockToAdd(id){
   _addPending = id;
   _addPendingTags = [];
   renderStockSearchList();
-  // 捲動到展開的列
-  setTimeout(()=>{
-    const el = document.getElementById('stockSearchList');
-    if(el) el.scrollTop = 0;
-  }, 50);
 }
 function togglePendingTag(catId){
   const i = _addPendingTags.indexOf(catId);
@@ -1226,7 +1248,7 @@ function togglePendingTag(catId){
 }
 function confirmAddStock(){
   if(!_addPending) return;
-  if(addStockToWatchlist(_addPending, _addPendingTags)){
+  if(addStockToWatchlist(_addPending, [..._addPendingTags])){
     _addPending = null;
     _addPendingTags = [];
     renderStockSearchList();
@@ -1236,6 +1258,22 @@ function confirmAddStock(){
 function cancelPendingAdd(){
   _addPending = null;
   _addPendingTags = [];
+  renderStockSearchList();
+}
+
+/* ── 已在清單的股票：直接切換分類 ── */
+function selectExistingStockEdit(id){
+  _addPending = null;
+  _addPendingTags = [];
+  _editPending = id;
+  renderStockSearchList();
+}
+function toggleExistingStockTag(stockId, catId){
+  toggleStockCategory(stockId, catId);   // 已有的函數，立即存檔
+  renderStockSearchList();               // 刷新 UI 顯示最新狀態
+}
+function cancelEditPending(){
+  _editPending = null;
   renderStockSearchList();
 }
 
@@ -1320,6 +1358,7 @@ function closeAllModals(){
   _currentMenuStock = null;
   _addPending = null;
   _addPendingTags = [];
+  _editPending = null;
 }
 function renderRanks(){
   const up = [...STOCKS].sort((a,b)=>b.pct-a.pct).slice(0,5);
