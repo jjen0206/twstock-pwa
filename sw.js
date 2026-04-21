@@ -1,6 +1,6 @@
 // Service Worker - 台股智慧看盤 PWA
-// v7：策略欄位（trend/sig/hist）從真實 FinMind 日 K 動態計算（MA5 vs MA20）
-const CACHE = 'twstock-v7';
+// v8：加入 TWSE MIS 盤中即時報價 + 市場狀態列（盤中 30 秒自動刷新）
+const CACHE = 'twstock-v8';
 const FILES = [
   './',
   './index.html',

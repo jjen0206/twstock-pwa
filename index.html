@@ -331,6 +331,10 @@
 
   <div id="snapshotBar" style="background:linear-gradient(90deg,rgba(34,197,94,.12),rgba(79,195,247,.08));border-bottom:1px solid rgba(34,197,94,.3);padding:8px 12px;font-size:11px;color:#9be8b5;display:flex;justify-content:space-between;align-items:center;gap:8px;">
     <div style="flex:1;min-width:0">
+      <div id="marketStatusLine" style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;margin-bottom:2px">
+        <span id="marketStatusDot" style="width:8px;height:8px;border-radius:50%;background:#6b7ba3;display:inline-block"></span>
+        <span id="marketStatusText" style="color:#9be8b5">偵測中...</span>
+      </div>
       <div>📦 <b id="snapshotDate" style="color:#22c55e">2026-04-20</b> <span id="snapshotSource" style="color:#6b7ba3">· FinMind</span></div>
       <div id="snapshotLastUpdate" style="color:#6b7ba3;font-size:10px;margin-top:2px">尚未刷新</div>
     </div>
@@ -912,8 +916,8 @@ function addStockToWatchlist(id, tags){
   const m = STOCK_MASTER.find(s=>s.id===id);
   toast(`✅ 已加入 ${id} ${m?m.name:''}`);
   // 有網路時嘗試抓最新資料
-  if(location.protocol !== 'file:' && typeof refreshFromFinMind === 'function'){
-    setTimeout(()=>refreshFromFinMind(true), 300);
+  if(location.protocol !== 'file:' && typeof refreshPrices === 'function'){
+    setTimeout(()=>refreshPrices(true), 300);
   }
   return true;
 }
@@ -1687,6 +1691,176 @@ async function finmindFetch(code, start, end){
 
 let finmindLastError = null;
 
+/* ===== TWSE MIS 盤中即時報價（15 秒延遲） ===== */
+// 上市(TSE)/上櫃(OTC) 市場歸屬快取：減少 URL 長度
+const stockMarket = JSON.parse(localStorage.getItem('twstock_market_v1') || '{}');
+function saveStockMarket(){
+  try{ localStorage.setItem('twstock_market_v1', JSON.stringify(stockMarket)); }catch(e){}
+}
+
+// 判斷台股市場狀態
+// 台股：週一至週五 09:00-13:30（台北時區），以台北時間判讀
+function getMarketStatus(){
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei', hour12: false,
+    weekday: 'short', hour: '2-digit', minute: '2-digit'
+  });
+  const parts = fmt.formatToParts(now);
+  const weekday = parts.find(p=>p.type==='weekday').value;
+  const hour   = parseInt(parts.find(p=>p.type==='hour').value, 10);
+  const minute = parseInt(parts.find(p=>p.type==='minute').value, 10);
+  const m = hour*60 + minute;
+  if(weekday === 'Sat' || weekday === 'Sun') return 'holiday';
+  if(m >= 9*60 && m <= 13*60 + 30) return 'open';      // 盤中
+  if(m >= 8*60 + 30 && m < 9*60) return 'pre-open';    // 盤前試撮
+  return 'closed';                                      // 盤後
+}
+
+// 更新頂端市場狀態列 UI
+function updateMarketBadge(){
+  const dot  = document.getElementById('marketStatusDot');
+  const text = document.getElementById('marketStatusText');
+  if(!dot || !text) return;
+  const s = getMarketStatus();
+  const map = {
+    'open':     { color:'#22c55e', label:'🟢 盤中 · 即時報價（15 秒延遲）' },
+    'pre-open': { color:'#facc15', label:'🟡 盤前試撮 · 08:30-09:00' },
+    'closed':   { color:'#ef4444', label:'🔴 已收盤 · 顯示最近一日 EOD' },
+    'holiday':  { color:'#6b7ba3', label:'⚪ 非交易日' }
+  };
+  const cfg = map[s] || map.closed;
+  dot.style.background = cfg.color;
+  text.textContent = cfg.label;
+  text.style.color = cfg.color;
+}
+
+// 單次 MIS 批次抓取（URL 長度限制，建議 ≤40 檔）
+async function twseMisFetchBatch(codes){
+  const parts = codes.map(c=>{
+    if(stockMarket[c] === 'tse') return `tse_${c}.tw`;
+    if(stockMarket[c] === 'otc') return `otc_${c}.tw`;
+    return `tse_${c}.tw|otc_${c}.tw`; // 未知：兩邊都試
+  });
+  const exCh = parts.join('|');
+  const raw = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${exCh}&json=1&delay=0&_=${Date.now()}`;
+  // MIS 無 CORS header → 必須過代理；優先用已鎖定的 FinMind endpoint
+  const order = finmindEndpoint
+    ? [finmindEndpoint, ...FINMIND_ENDPOINTS.filter(e=>e.name!==finmindEndpoint.name)]
+    : FINMIND_ENDPOINTS;
+  let lastErr;
+  for(const ep of order){
+    if(ep.name === '直連') continue; // MIS 沒 CORS，直連必敗
+    try{
+      const res = await fetch(ep.build(raw), { cache:'no-cache' });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const j = await res.json();
+      if(!j || !Array.isArray(j.msgArray)) throw new Error('MIS 回傳格式錯誤');
+      return j.msgArray;
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('MIS 代理全失敗');
+}
+
+// 盤中即時刷新：對所有 STOCKS 跑 MIS，更新 px/ch/pct/open/high/low/vol
+async function refreshFromMis(){
+  const BATCH = 40;
+  const targets = STOCKS.map(s=>s.id);
+  let ok = 0, fail = 0;
+  for(let i=0; i<targets.length; i+=BATCH){
+    const batch = targets.slice(i, i+BATCH);
+    if(window.updateProgress) window.updateProgress(`MIS 即時 ${i+batch.length}/${targets.length}...`);
+    try{
+      const msgs = await twseMisFetchBatch(batch);
+      for(const m of msgs){
+        const id = m.c;
+        if(m.ex){ stockMarket[id] = m.ex; } // 快取市場歸屬
+        const z = parseFloat(m.z);
+        const y = parseFloat(m.y);
+        if(!isFinite(z) || z <= 0) continue; // 今日無成交 / 停牌
+        const s = STOCKS.find(x=>x.id === id);
+        if(!s) continue;
+        const ch = +(z - y).toFixed(2);
+        const pct = y ? +(ch/y*100).toFixed(2) : 0;
+        s.px = +z.toFixed(2);
+        s.ch = ch;
+        s.pct = pct;
+        s.open = parseFloat(m.o) || z;
+        s.high = parseFloat(m.h) || z;
+        s.low  = parseFloat(m.l) || z;
+        s.vol  = parseInt(m.v) || s.vol || 0;
+        s.date = (m.d || '').replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') || new Date().toISOString().slice(0,10);
+        s.misTime = m.t || '';
+        s.real = true;
+        s.live = true;
+        s.pending = false;
+        s.sig = computeSig(s.trend || '盤整', s.pct); // pct 變了要重算 sig
+        ok++;
+      }
+    }catch(e){
+      console.warn('MIS batch failed:', e.message);
+      fail += batch.length;
+    }
+    await new Promise(r=>setTimeout(r, 150));
+  }
+  saveStockMarket();
+  return { ok, fail };
+}
+
+// 歷史資料（trend/hist）是否已初始化過
+let initialHistoryFetched = false;
+
+// 統一刷新入口：根據市場狀態選擇 MIS 或 FinMind
+async function refreshPrices(silent=false){
+  if(location.protocol === 'file:'){
+    if(!silent) toast(`📦 本機模式 · 使用嵌入資料`);
+    updateMarketBadge();
+    return { ok: STOCKS.length, fail: 0, embedded: true };
+  }
+  const status = getMarketStatus();
+  // 首次一定要先抓 FinMind 建立 trend/hist
+  if(!initialHistoryFetched){
+    if(!silent) toast('📡 首次連線：抓取歷史資料建立策略...');
+    const r = await refreshFromFinMind(silent);
+    initialHistoryFetched = (r.ok > 0);
+  }
+  // 盤中或盤前：用 MIS 拿即時價
+  if(status === 'open' || status === 'pre-open'){
+    try{
+      const mis = await refreshFromMis();
+      if(mis.ok > 0){
+        SIGNALS = buildSignals();
+        renderWatch(); renderRanks(); renderSignals(); renderTopBuy();
+        finmindLastUpdate = new Date();
+        const srcEl = document.getElementById('snapshotSource');
+        const dateEl = document.getElementById('snapshotDate');
+        if(srcEl) srcEl.textContent = '· TWSE MIS 即時';
+        if(dateEl){
+          const first = STOCKS.find(s=>s.live && s.misTime);
+          dateEl.textContent = first ? `即時 ${first.misTime}` : new Date().toISOString().slice(0,10);
+        }
+        updateMarketBadge();
+        updateDataSourceBadge(mis.ok, mis.fail);
+        if(currentStock){
+          const u = currentStock.ch>=0;
+          const pxEl = document.getElementById('dPx');
+          if(pxEl){ pxEl.textContent = currentStock.px.toFixed(2); pxEl.className = 'd-px '+(u?'up':'down'); }
+        }
+        if(!silent) toast(`🟢 即時 ${mis.ok}/${STOCKS.length}（15 秒延遲）`);
+        return mis;
+      }
+      if(!silent) toast('MIS 無資料，改抓 FinMind 日線');
+    }catch(e){
+      console.warn('MIS 整批失敗：', e.message);
+      if(!silent) toast(`MIS 失敗（${e.message}），改抓 FinMind`);
+    }
+  }
+  // 收盤 / 假日 / MIS 全失敗 → FinMind 日線
+  const fm = await refreshFromFinMind(silent);
+  updateMarketBadge();
+  return fm;
+}
+
 // 即時進度顯示（徽章首行）
 window.updateProgress = function(msg){
   let badge = document.getElementById('dataSourceBadge');
@@ -1714,7 +1888,7 @@ async function oneClickUpdate(){
     }
     // 強制解鎖 endpoint，這樣會重新掃三個端點挑能通的
     finmindEndpoint = null;
-    const { ok, fail } = await refreshFromFinMind(false);
+    const { ok, fail } = await refreshPrices(false);
     const el = document.getElementById('snapshotLastUpdate');
     if(el){
       const now = new Date();
@@ -1827,7 +2001,7 @@ function updateDataSourceBadge(ok, fail){
       <span style="color:${okColor}">● FinMind · ${ep} · ${ok}/${STOCKS.length}</span>
       <span style="display:flex;gap:6px;align-items:center">
         <span style="color:#9aa7c7">${t}</span>
-        <button onclick="event.stopPropagation();refreshFromFinMind(false)" style="background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.4);color:#4fc3f7;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">🔄</button>
+        <button onclick="event.stopPropagation();refreshPrices(false)" style="background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.4);color:#4fc3f7;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">🔄</button>
       </span>
     </div>
     ${errLine}`;
@@ -1857,13 +2031,23 @@ async function finmindStartup(){
     return;
   }
   window.updateProgress('初始化...');
-  await refreshFromFinMind(true);
+  updateMarketBadge();
+  await refreshPrices(true);
 }
 setTimeout(finmindStartup, 300);
 
-// 每 10 分鐘自動刷新（僅在 http(s) 環境；file:// 不會重試）
+// 自動刷新策略：盤中每 30 秒抓 MIS 即時；盤後每 10 分鐘抓 FinMind EOD
 if(location.protocol !== 'file:'){
-  setInterval(()=>refreshFromFinMind(true), 10*60*1000);
+  let lastAutoFetch = Date.now();
+  setInterval(()=>{
+    updateMarketBadge();
+    const st = getMarketStatus();
+    const interval = (st === 'open' || st === 'pre-open') ? 30*1000 : 10*60*1000;
+    if(Date.now() - lastAutoFetch >= interval){
+      lastAutoFetch = Date.now();
+      refreshPrices(true);
+    }
+  }, 15*1000);
 }
 
 /* 首次開啟提示可安裝（僅在非 standalone 模式） */
