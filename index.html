@@ -1003,40 +1003,100 @@ const STOCK_HIST = {
   '3008': [2670.0, 2820.0, 2820.0, 2605.0, 2710.0],
   '2382': [323.0,  308.5,  318.5,  323.0,  329.0 ],
 };
-// 策略訊號由真實股價動態產生（獨孤求敗：前高前低法則、順勢加碼、停損紀律）
-// 依 activeCat 自動過濾，讓使用者的分類篩選同步作用於訊號中心
-// 單一股票的策略分析（共用於 SIGNALS 與 Top 建議買進）
+/*
+ * 獨孤求敗三大心法核心引擎
+ * ─────────────────────────────────────────────
+ * 心法一：前高前低法則（支撐/壓力定位）
+ *   - 現價突破前高 → 追價買進（突破前高）
+ *   - 現價回測前低不跌破 → 試單買進（前低支撐）
+ *   - 現價跌破前低 → 立即停損出場（跌破前低）
+ *   - 現價逼近前高卻轉弱 → 減碼觀望（前高壓力）
+ *
+ * 心法二：順勢加碼
+ *   - 多頭趨勢中段整理（前低之上、前高之下）→ 可順勢加碼
+ *   - 前提：趨勢確立（MA5>MA20），非逆勢攤平
+ *
+ * 心法三：停損紀律 + 1:2 風報比
+ *   - 停損：突破信號停在突破點下方；支撐信號停在前低-3%
+ *   - 目標：進場風險的 2 倍，不貪、不戀棧
+ * ─────────────────────────────────────────────
+ */
 function analyzeStock(s){
-  const hist = STOCK_HIST[s.id] || [];
-  const min5 = hist.length ? Math.min(...hist, s.low) : s.low;
-  const max5 = hist.length ? Math.max(...hist, s.high) : s.high;
-  const absP = Math.abs(s.pct);
-  let type, action, isBuy;
-  if(s.trend==='多頭' && s.pct >= 1.5){
-    type='突破前高'; action='追價'; isBuy=true;
-  } else if(s.trend==='多頭' && s.pct >= 0){
-    type='順勢加碼'; action='加碼'; isBuy=true;
-  } else if(s.trend==='多頭' && s.pct > -1){
-    type='前低不跌'; action='買進'; isBuy=true;
-  } else if(s.trend==='盤整' && s.pct >= 1.5){
-    type='突破前高'; action='追價'; isBuy=true;
-  } else if(s.trend==='空頭' || s.pct <= -1.5){
-    type='前高不過'; action='減碼'; isBuy=false;
-  } else if(s.pct <= -0.5){
-    type='前高不過'; action='減碼'; isBuy=false;
+  if(!s || !s.px || s.px <= 0) return null;
+
+  // 前高前低資料源：優先累積日線（越多越準），退而取靜態快取
+  const dailyCloses = buildHistFromDaily(s.id);
+  const hist = dailyCloses.length >= 3 ? dailyCloses : (STOCK_HIST[s.id] || []);
+  const dataOk = hist.length >= 3;
+
+  // 前高/前低（不含今日，才是「前」；資料不足則用今日 high/low 代替）
+  const prevHigh = hist.length ? Math.max(...hist) : s.high;
+  const prevLow  = hist.length ? Math.min(...hist) : s.low;
+
+  const px    = s.px;
+  const trend = s.trend || '盤整';
+  const pct   = s.pct   || 0;
+
+  let type, action, isBuy, stop, baseConf;
+
+  // ── 心法一 ──────────────────────────────────
+  if(px > prevHigh * 1.01){
+    // 突破前高：量能通常放大，追價買進
+    type = '突破前高'; action = '追價買進'; isBuy = true;
+    stop = +prevHigh.toFixed(2);                    // 停損：回跌到舊前高下方即錯
+    baseConf = 70 + (trend === '多頭' ? 12 : 2);
+
+  } else if(px < prevLow * 0.97){
+    // 跌破前低：心法三最高優先，立即停損
+    type = '跌破前低'; action = '停損出場'; isBuy = false;
+    stop = +(px * 1.005).toFixed(2);               // 若反彈回到跌破點上方才重評
+    baseConf = 78 + (trend === '空頭' ? 10 : 0);
+
+  } else if(px <= prevLow * 1.025 && trend !== '空頭'){
+    // 回測前低不跌破：最佳進場點，風險最小
+    type = '前低支撐'; action = '試單買進'; isBuy = true;
+    stop = +(prevLow * 0.97).toFixed(2);            // 停損在前低下方 3%
+    baseConf = 65 + (trend === '多頭' ? 12 : 4) + (dataOk ? 5 : 0);
+
+  // ── 心法二 ──────────────────────────────────
+  } else if(trend === '多頭' && px > prevLow * 1.03 && px < prevHigh * 0.99 && pct >= -1){
+    // 多頭趨勢中段整理：前低不破、前高未到，可順勢加碼
+    type = '多頭整理'; action = '順勢加碼'; isBuy = true;
+    stop = +(prevLow * 0.97).toFixed(2);
+    baseConf = 60 + (dataOk ? 8 : 0) + Math.max(0, pct * 2);
+
+  // ── 前高壓力（非心法一跌破，但偏弱）──────────
+  } else if(trend === '空頭' || (px >= prevHigh * 0.985 && pct <= -0.5)){
+    type = '前高壓力'; action = '減碼觀望'; isBuy = false;
+    stop = +(prevHigh * 1.01).toFixed(2);           // 若突破前高才考慮反手
+    baseConf = 62 + (trend === '空頭' ? 12 : 0) + Math.min(12, Math.abs(pct) * 3);
+
   } else {
-    return null; // 盤整小幅震盪，不出訊號
+    return null; // 盤整中段，無明確訊號，靜待方向
   }
-  const stop = isBuy ? +min5.toFixed(2) : +max5.toFixed(2);
-  const risk = Math.max(0.01, isBuy ? (s.px - stop) : (stop - s.px));
-  const target = isBuy ? +(s.px + risk*2).toFixed(2) : +(s.px - risk*2).toFixed(2);
-  const conf = Math.min(95, Math.max(62, Math.round(65 + absP*7 + (hist.length>=5?5:0))));
-  const score = conf + absP + (s.trend==='多頭'?5 : s.trend==='空頭'?-5 : 0);
+
+  // ── 心法三：1:2 風報比 ───────────────────────
+  const risk   = Math.max(px * 0.005, Math.abs(px - stop)); // 最小風險不低於 0.5%
+  const target = isBuy
+    ? +(px + risk * 2).toFixed(2)
+    : +(px - risk * 2).toFixed(2);
+
+  const conf  = Math.min(93, Math.round(baseConf + Math.min(10, Math.abs(pct) * 1.5)));
+  const score = conf
+    + Math.abs(pct) * 0.5
+    + (trend === '多頭' ? 8 : trend === '空頭' ? -8 : 0)
+    + (dataOk ? 5 : 0);
+
   return {
-    id: s.id, name: s.name, type, action, isBuy,
-    px: +s.px.toFixed(2), stop, target,
-    rr: '1:2', tf: '日K', conf, score,
-    pct: s.pct
+    id: s.id, name: s.name,
+    type, action, isBuy,
+    px:       +px.toFixed(2),
+    prevHigh: +prevHigh.toFixed(2),
+    prevLow:  +prevLow.toFixed(2),
+    stop, target,
+    rr: '1:2', tf: '日K',
+    conf, score: +score.toFixed(1),
+    pct
   };
 }
 
@@ -1504,11 +1564,12 @@ function openDetail(id){
   document.getElementById('dHigh').textContent = s.high.toFixed(2);
   document.getElementById('dLow').textContent = s.low.toFixed(2);
   document.getElementById('dVol').textContent = s.vol.toLocaleString()+' 張';
-  const support = (s.low * 0.985).toFixed(2);
-  const resist = (s.high * 1.015).toFixed(2);
-  const stop = (s.px * 0.97).toFixed(2);
-  const target = (s.px + (s.px - s.px*0.97)*2).toFixed(2);
-  const sigText = s.sig==='買' ? '🔥 前低不跌 · 買進訊號' : s.sig==='賣' ? '⚠ 前高不過 · 減碼訊號' : '◎ 盤整中 · 觀望';
+  const a = analyzeStock(s);
+  const support = a ? String(a.prevLow) : (s.low * 0.985).toFixed(2);
+  const resist  = a ? String(a.prevHigh) : (s.high * 1.015).toFixed(2);
+  const stop    = a ? String(a.stop) : (s.px * 0.97).toFixed(2);
+  const target  = a ? String(a.target) : (s.px * 1.06).toFixed(2);
+  const sigText = a ? `${a.isBuy ? '🔥' : '⚠'} ${a.type} · ${a.action}` : '◎ 盤整中 · 觀望';
   document.getElementById('sSignal').textContent = sigText;
   document.getElementById('sSupport').textContent = support;
   document.getElementById('sResist').textContent = resist;
