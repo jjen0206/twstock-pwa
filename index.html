@@ -114,6 +114,56 @@
 
   .watch{background:var(--card);border-radius:16px;border:1px solid var(--line);overflow:hidden}
   .w-head{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:10px 12px;font-size:11px;color:var(--sub);border-bottom:1px solid var(--line);background:var(--card2)}
+  /* === 分類 chip bar === */
+  .cat-chips{display:flex;gap:6px;overflow-x:auto;margin:0 -4px 10px;padding:2px 4px 8px;scrollbar-width:none}
+  .cat-chips::-webkit-scrollbar{display:none}
+  .cat-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--sub);font-size:12px;cursor:pointer;white-space:nowrap;user-select:none;transition:all .15s}
+  .cat-chip:active{transform:scale(.96)}
+  .cat-chip.active{background:rgba(255,210,74,.15);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .cat-chip .cnt{opacity:.7;font-size:10px;margin-left:2px}
+  .mini-btn{background:var(--card);color:var(--sub);border:1px solid var(--line);border-radius:14px;padding:5px 10px;font-size:12px;font-family:inherit;cursor:pointer;user-select:none}
+  .mini-btn:active{background:var(--card2)}
+  .mini-btn.primary{background:rgba(255,210,74,.15);color:var(--accent);border-color:rgba(255,210,74,.35);font-weight:600}
+  .empty-state{padding:30px 16px;text-align:center;color:var(--sub);font-size:13px;background:var(--card);border:1px dashed var(--line);border-radius:16px;line-height:1.8}
+  /* === Modal === */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:modalFade .2s ease}
+  @keyframes modalFade{from{opacity:0}to{opacity:1}}
+  .modal{width:100%;max-width:420px;background:var(--card);border-radius:20px 20px 0 0;border:1px solid var(--line);border-bottom:none;max-height:85vh;display:flex;flex-direction:column;animation:modalSlide .25s ease}
+  @keyframes modalSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-title{font-size:15px;font-weight:700;padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .modal-title .x{color:var(--sub);cursor:pointer;padding:4px 8px;font-size:22px;line-height:1;border-radius:6px}
+  .modal-title .x:active{background:var(--card2)}
+  .modal-body{flex:1;overflow-y:auto;padding:12px 16px}
+  .modal-actions{padding:10px 16px;border-top:1px solid var(--line);display:flex;gap:8px}
+  .modal-actions button{flex:1;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13px;font-family:inherit;cursor:pointer}
+  .modal-actions button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;border-color:transparent;font-weight:700}
+  .modal-actions button.danger{background:rgba(239,68,68,.15);color:#ff7a7a;border-color:rgba(239,68,68,.4)}
+  .search-input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}
+  .search-input:focus{border-color:var(--accent)}
+  .search-list{margin-top:10px;max-height:48vh;overflow-y:auto}
+  .search-row{display:flex;justify-content:space-between;align-items:center;padding:10px 8px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px}
+  .search-row:active{background:var(--card2)}
+  .search-row .meta{display:flex;flex-direction:column}
+  .search-row .nm{font-size:14px;font-weight:600}
+  .search-row .sub{font-size:11px;color:var(--sub);margin-top:2px}
+  .search-row .add{background:rgba(255,210,74,.15);color:var(--accent);border:1px solid rgba(255,210,74,.35);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:600}
+  .search-row.in-list .add{background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.35)}
+  .cat-manage-row{display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--line)}
+  .cat-manage-row .dot{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
+  .cat-manage-row .nm{flex:1;font-size:14px}
+  .cat-manage-row .cnt{font-size:11px;color:var(--sub)}
+  .cat-manage-row .rm{background:rgba(239,68,68,.15);color:#ff7a7a;border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
+  .cat-manage-row.preset{opacity:.7}
+  .add-cat-form{display:flex;gap:6px;padding:10px;background:var(--card2);border-radius:10px;margin-bottom:10px}
+  .add-cat-form input[type=text]{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;outline:none;font-family:inherit}
+  .add-cat-form input[type=color]{width:40px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer;padding:2px}
+  .add-cat-form button{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;border:none;border-radius:8px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+  .tag-chip{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:14px;background:var(--card2);border:1px solid var(--line);color:var(--sub);font-size:12px;cursor:pointer;margin:4px 4px 0 0;user-select:none}
+  .tag-chip.on{background:rgba(255,210,74,.18);color:var(--accent);border-color:rgba(255,210,74,.4);font-weight:600}
+  .row-menu{flex:0 0 auto;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--sub);cursor:pointer;font-size:18px}
+  .row-menu:active{background:var(--card2);color:var(--accent)}
+  .w-row.with-menu{grid-template-columns:1.6fr 1fr 1fr 0.6fr 30px}
+  .w-head.with-menu{grid-template-columns:1.6fr 1fr 1fr 0.6fr 30px}
   .w-row{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:14px 12px;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s;min-height:56px}
   .w-row:last-child{border-bottom:none}
   .w-row:active{background:var(--card2)}
@@ -264,16 +314,6 @@
 <body>
 <div class="phone">
 
-  <!-- 模擬狀態列（僅桌機顯示） -->
-  <div class="sim-status">
-    <div>9:41</div>
-    <div class="right">
-      <span>●●●●</span>
-      <span style="font-size:11px">5G</span>
-      <span>🔋</span>
-    </div>
-  </div>
-
   <div class="header">
     <div class="brand">
       <div class="logo">獨</div>
@@ -282,16 +322,23 @@
         <div class="t2">獨孤求敗策略 · K線分析</div>
       </div>
     </div>
-    <div class="icon-btn" onclick="toast('搜尋功能')">
+    <div class="icon-btn" onclick="openAddStockModal()" title="加股票">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
     </div>
   </div>
 
   <div class="market-strip" id="marketStrip"></div>
 
-  <div id="snapshotBar" style="background:linear-gradient(90deg,rgba(34,197,94,.12),rgba(79,195,247,.08));border-bottom:1px solid rgba(34,197,94,.3);padding:6px 12px;font-size:11px;color:#9be8b5;display:flex;justify-content:space-between;align-items:center;">
-    <span>📦 真實資料 · 截至 <b id="snapshotDate" style="color:#22c55e">2026-04-20</b></span>
-    <span id="snapshotSource" style="color:#6b7ba3">FinMind（嵌入）</span>
+  <div id="snapshotBar" style="background:linear-gradient(90deg,rgba(34,197,94,.12),rgba(79,195,247,.08));border-bottom:1px solid rgba(34,197,94,.3);padding:8px 12px;font-size:11px;color:#9be8b5;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+    <div style="flex:1;min-width:0">
+      <div id="marketStatusLine" style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;margin-bottom:2px">
+        <span id="marketStatusDot" style="width:8px;height:8px;border-radius:50%;background:#6b7ba3;display:inline-block"></span>
+        <span id="marketStatusText" style="color:#9be8b5">偵測中...</span>
+      </div>
+      <div>📦 <b id="snapshotDate" style="color:#22c55e">2026-04-20</b> <span id="snapshotSource" style="color:#6b7ba3">· TWSE OpenAPI</span></div>
+      <div id="snapshotLastUpdate" style="color:#6b7ba3;font-size:10px;margin-top:2px">尚未刷新</div>
+    </div>
+    <button id="btnOneClickUpdate" onclick="oneClickUpdate()" style="flex:0 0 auto;background:linear-gradient(135deg,#22c55e,#059669);color:#fff;border:none;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(34,197,94,.4);white-space:nowrap">🔄 一鍵更新</button>
   </div>
 
   <div class="screen">
@@ -299,7 +346,8 @@
     <!-- Home -->
     <div id="view-home" class="view active">
       <div class="segtabs">
-        <div class="seg active" onclick="switchSeg(this,'home')">自選股</div>
+        <div class="seg active" onclick="switchSeg(this,'home')">策略 Top10</div>
+        <div class="seg" onclick="switchSeg(this,'watch')">自選股</div>
         <div class="seg" onclick="switchSeg(this,'rank')">漲跌榜</div>
         <div class="seg" onclick="switchSeg(this,'sig')">策略訊號</div>
       </div>
@@ -320,9 +368,29 @@
         </div>
 
         <div class="section-title">
-          <div class="t"><span class="dot"></span>我的自選股</div>
-          <div class="more" onclick="toast('編輯自選')">編輯 ›</div>
+          <div class="t"><span class="dot"></span>策略建議買進 Top 10</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="mini-btn" onclick="openManageCatsModal()" title="管理分類">🏷️</button>
+            <button class="mini-btn primary" onclick="openAddStockModal()" title="加股票">＋ 加股票</button>
+          </div>
         </div>
+        <div class="cat-chips" id="topChipBar"></div>
+        <div style="font-size:11px;color:var(--sub);padding:0 2px 8px 2px;line-height:1.5">
+          💡 依「獨孤求敗」策略從自選股中篩選出最具買進訊號的股票，依信心度排序。
+        </div>
+        <div class="watch" id="topBuyList"></div>
+        <div id="topBuyEmpty" style="display:none;text-align:center;padding:50px 20px;color:var(--sub);font-size:13px;line-height:1.8"></div>
+      </div>
+
+      <div id="seg-watch" class="seg-body" style="display:none">
+        <div class="section-title">
+          <div class="t"><span class="dot"></span>我的自選股</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="mini-btn" onclick="openManageCatsModal()" title="管理分類">🏷️</button>
+            <button class="mini-btn primary" onclick="openAddStockModal()" title="加股票">＋ 加股票</button>
+          </div>
+        </div>
+        <div id="catChipBar" class="cat-chips"></div>
         <div class="watch" id="watchList">
           <div class="w-head">
             <div>股票</div>
@@ -331,6 +399,7 @@
             <div style="text-align:center">訊號</div>
           </div>
         </div>
+        <div id="watchEmpty" class="empty-state" style="display:none"></div>
       </div>
 
       <div id="seg-rank" class="seg-body" style="display:none">
@@ -342,6 +411,7 @@
 
       <div id="seg-sig" class="seg-body" style="display:none">
         <div class="section-title"><div class="t"><span class="dot"></span>獨孤求敗策略即時訊號</div></div>
+        <div class="cat-chips" id="sigHomeChipBar" style="margin-bottom:10px"></div>
         <div id="signalList"></div>
       </div>
 
@@ -403,17 +473,22 @@
         <div class="sp-item"><span class="k">趨勢方向</span><span class="v" id="sTrend">—</span></div>
       </div>
 
-      <div class="action-row">
-        <button class="btn btn-buy" onclick="toast('已加入模擬買進，請至證券商下單')">🔥 買進訊號</button>
-        <button class="btn btn-sell" onclick="toast('已設定停損提醒')">🛡️ 設定停損</button>
-      </div>
-
-      <div class="notice">💡 <b>獨孤求敗心法：</b>買進不猜底部，需前一筆獲利基礎上加碼；停損設於K線實體最低點或前低，跌破即出場，不戀棧。</div>
+      <div class="notice">💡 <b>獨孤求敗心法：</b>買進不猜底部，需前一筆獲利基礎上加碼；停損設於K線實體最低點或前低，跌破即出場，不戀棧。實際下單請至您的證券商 App 執行。</div>
     </div>
 
     <!-- Signals -->
     <div id="view-signals" class="view">
-      <div class="section-title"><div class="t"><span class="dot"></span>策略訊號中心</div></div>
+      <div class="section-title">
+        <div class="t"><span class="dot"></span>策略訊號中心</div>
+        <div style="display:flex;gap:6px">
+          <button class="mini-btn" onclick="openManageCatsModal()" title="管理分類">🏷️</button>
+          <button class="mini-btn" onclick="openAddStockModal()" title="加股票">＋ 加股票</button>
+        </div>
+      </div>
+      <div class="cat-chips" id="sigChipBar" style="margin-bottom:10px"></div>
+      <div style="font-size:11px;color:var(--sub);padding:0 2px 8px 2px;line-height:1.5">
+        💡 訊號由自選股依「獨孤求敗」策略即時產生，切換分類可聚焦觀察。
+      </div>
       <div id="signalList2"></div>
     </div>
 
@@ -467,33 +542,26 @@
         <div class="avatar">J</div>
         <div>
           <div class="prof-t">J 投資者</div>
-          <div class="prof-s">jjen0206@gmail.com · VIP 會員</div>
+          <div class="prof-s">jjen0206@gmail.com</div>
         </div>
       </div>
 
       <div class="section-title"><div class="t"><span class="dot"></span>我的投資</div></div>
       <div class="menu">
-        <div class="m-row" onclick="toast('持股管理')"><span>📊 持股管理</span><span class="r">3 檔 ›</span></div>
-        <div class="m-row" onclick="toast('交易日誌')"><span>📝 交易日誌</span><span class="r">本月 12 筆 ›</span></div>
-        <div class="m-row" onclick="toast('自選股清單')"><span>⭐ 自選股清單</span><span class="r">8 檔 ›</span></div>
-        <div class="m-row" onclick="toast('策略通知')"><span>🔔 策略通知</span><span class="r">已開啟 ›</span></div>
+        <div class="m-row" onclick="goToWatchlist()"><span>⭐ 自選股清單</span><span class="r" id="mineStockCount">— 檔 ›</span></div>
       </div>
 
       <div class="section-title"><div class="t"><span class="dot"></span>策略設定</div></div>
       <div class="menu">
-        <div class="m-row" onclick="toast('預設風報比 1:2')"><span>🎯 預設風報比</span><span class="r">1:2 ›</span></div>
-        <div class="m-row" onclick="toast('單筆風險 2%')"><span>💰 單筆風險上限</span><span class="r">2% ›</span></div>
-        <div class="m-row" onclick="toast('前高前低週期 20 日')"><span>📐 前高前低週期</span><span class="r">20 日 ›</span></div>
-        <div class="m-row" onclick="toast('教學影音')"><span>🎓 獨孤求敗教學影音</span><span class="r">23 部 ›</span></div>
+        <div class="m-row"><span>🎯 預設風報比</span><span class="r">1:2</span></div>
+        <div class="m-row"><span>💰 單筆風險上限</span><span class="r">2%</span></div>
+        <div class="m-row"><span>📐 前高前低週期</span><span class="r">20 日</span></div>
       </div>
 
       <div class="section-title"><div class="t"><span class="dot"></span>帳戶</div></div>
       <div class="menu">
-        <div class="m-row" onclick="toast('NT$299/月')"><span>💎 訂閱方案</span><span class="r">NT$299/月 ›</span></div>
         <div class="m-row" onclick="showInstallGuide()"><span>📱 安裝到手機主畫面</span><span class="r">›</span></div>
-        <div class="m-row" onclick="toast('免責聲明')"><span>📄 免責聲明</span><span class="r">›</span></div>
-        <div class="m-row" onclick="toast('隱私條款')"><span>🔒 隱私條款</span><span class="r">›</span></div>
-        <div class="m-row" onclick="toast('v1.0.0')"><span>ℹ️ 關於 App</span><span class="r">v1.0.0 ›</span></div>
+        <div class="m-row"><span>ℹ️ 關於 App</span><span class="r">v1.1</span></div>
       </div>
 
       <div class="disclaimer">本APP為分析工具，所有訊號均為參考資訊，不構成投資建議。投資有風險，過去績效不保證未來報酬。</div>
@@ -530,6 +598,58 @@
   </div>
 
   <div class="toast" id="toast">已加入追蹤</div>
+
+  <!-- ===== Modal：新增自選股 ===== -->
+  <div id="modalAddStock" class="modal-overlay" style="display:none" onclick="if(event.target===this) closeAllModals()">
+    <div class="modal">
+      <div class="modal-title">
+        <span>＋ 加入自選股</span>
+        <span class="x" onclick="closeAllModals()">×</span>
+      </div>
+      <div class="modal-body">
+        <input id="stockSearchInput" class="search-input" placeholder="輸入代碼或名稱（例：2330 或 台積電）" oninput="renderStockSearchList()" autocomplete="off">
+        <div id="stockSearchList" class="search-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modal：管理分類 ===== -->
+  <div id="modalManageCats" class="modal-overlay" style="display:none" onclick="if(event.target===this) closeAllModals()">
+    <div class="modal">
+      <div class="modal-title">
+        <span>🏷️ 管理分類</span>
+        <span class="x" onclick="closeAllModals()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="add-cat-form">
+          <input id="newCatName" type="text" placeholder="新分類名稱（例：核心持股、短線）" maxlength="10">
+          <input id="newCatColor" type="color" value="#4fc3f7">
+          <button onclick="doAddCustomCategory()">新增</button>
+        </div>
+        <div style="font-size:11px;color:var(--sub);margin:6px 2px">說明：預設分類依產業自動歸類；自訂分類可以手動指派股票</div>
+        <div id="manageCatsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modal：股票選單（編輯分類/移除） ===== -->
+  <div id="modalStockMenu" class="modal-overlay" style="display:none" onclick="if(event.target===this) closeAllModals()">
+    <div class="modal">
+      <div class="modal-title">
+        <span id="stockMenuTitle">股票設定</span>
+        <span class="x" onclick="closeAllModals()">×</span>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:12px;color:var(--sub);margin-bottom:8px">指派自訂分類（可多選）</div>
+        <div id="stockMenuTags"></div>
+        <div style="font-size:11px;color:var(--sub);margin-top:10px" id="stockIndustryNote"></div>
+      </div>
+      <div class="modal-actions">
+        <button onclick="closeAllModals()">取消</button>
+        <button class="danger" onclick="confirmRemoveStock()">🗑️ 從自選股移除</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -589,18 +709,275 @@ const INDICES = [
 ];
 // 資料截至 2026-04-20 （由 Claude sandbox 從 FinMind 抓取真實資料嵌入）
 const DATA_SNAPSHOT_DATE = '2026-04-20';
-const STOCKS = [
-  {id:'2330',name:'台積電',  px:2025.0, ch:-5,    pct:-0.25, open:2030.0, high:2055.0, low:2025.0, vol:30566, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'2317',name:'鴻海',    px:207.5,  ch:+1.5,  pct:+0.73, open:206.0,  high:209.5,  low:204.5,  vol:39312, sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
-  {id:'2454',name:'聯發科',  px:1900.0, ch:-25,   pct:-1.30, open:1960.0, high:1965.0, low:1895.0, vol:11656, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'2308',name:'台達電',  px:1900.0, ch:+60,   pct:+3.26, open:1860.0, high:1980.0, low:1860.0, vol:12064, sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
-  {id:'2412',name:'中華電',  px:137.0,  ch:-0.5,  pct:-0.36, open:137.5,  high:138.0,  low:137.0,  vol:12592, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'2603',name:'長榮',    px:197.0,  ch:-1,    pct:-0.51, open:198.5,  high:199.0,  low:196.0,  vol:14106, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'2891',name:'中信金',  px:53.1,   ch:+0,    pct:+0.00, open:53.1,   high:53.7,   low:52.7,   vol:47288, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'2881',name:'富邦金',  px:87.2,   ch:-0.8,  pct:-0.91, open:87.9,   high:88.0,   low:87.2,   vol:22352, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
-  {id:'3008',name:'大立光',  px:2710.0, ch:+105,  pct:+4.03, open:2630.0, high:2780.0, low:2630.0, vol:2683,  sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
-  {id:'2382',name:'廣達',    px:329.0,  ch:+6,    pct:+1.86, open:320.0,  high:330.5,  low:320.0,  vol:19861, sig:'買', trend:'多頭', real:true, date:'2026-04-20'},
+
+/* ===== 股票主檔（~150 檔台股 + ETF）===== */
+const STOCK_MASTER = [
+  // 半導體 semi
+  {id:'2330',name:'台積電',industry:'semi'},{id:'2454',name:'聯發科',industry:'semi'},
+  {id:'2303',name:'聯電',industry:'semi'},{id:'2408',name:'南亞科',industry:'semi'},
+  {id:'2344',name:'華邦電',industry:'semi'},{id:'3034',name:'聯詠',industry:'semi'},
+  {id:'6770',name:'力積電',industry:'semi'},{id:'3711',name:'日月光投控',industry:'semi'},
+  {id:'3661',name:'世芯-KY',industry:'semi'},{id:'8046',name:'南電',industry:'semi'},
+  {id:'6239',name:'力成',industry:'semi'},{id:'3529',name:'力旺',industry:'semi'},
+  {id:'4958',name:'臻鼎-KY',industry:'semi'},{id:'3037',name:'欣興',industry:'semi'},
+  {id:'3443',name:'創意',industry:'semi'},{id:'2383',name:'台光電',industry:'semi'},
+  {id:'6415',name:'矽力-KY',industry:'semi'},{id:'2441',name:'超豐',industry:'semi'},
+  {id:'2458',name:'義隆',industry:'semi'},{id:'3532',name:'台勝科',industry:'semi'},
+  {id:'5269',name:'祥碩',industry:'semi'},{id:'6147',name:'頎邦',industry:'semi'},
+  {id:'6285',name:'啟碁',industry:'semi'},{id:'3014',name:'聯陽',industry:'semi'},
+  {id:'8081',name:'致新',industry:'semi'},{id:'3324',name:'雙鴻',industry:'semi'},
+  {id:'6488',name:'環球晶',industry:'semi'},
+  // 電子 electronic
+  {id:'2317',name:'鴻海',industry:'electronic'},{id:'2308',name:'台達電',industry:'electronic'},
+  {id:'2382',name:'廣達',industry:'electronic'},{id:'2357',name:'華碩',industry:'electronic'},
+  {id:'2474',name:'可成',industry:'electronic'},{id:'2327',name:'國巨',industry:'electronic'},
+  {id:'2379',name:'瑞昱',industry:'electronic'},{id:'2356',name:'英業達',industry:'electronic'},
+  {id:'2395',name:'研華',industry:'electronic'},{id:'3017',name:'奇鋐',industry:'electronic'},
+  {id:'2376',name:'技嘉',industry:'electronic'},{id:'2324',name:'仁寶',industry:'electronic'},
+  {id:'2377',name:'微星',industry:'electronic'},{id:'2337',name:'旺宏',industry:'electronic'},
+  {id:'2301',name:'光寶科',industry:'electronic'},{id:'3189',name:'景碩',industry:'electronic'},
+  {id:'3044',name:'健鼎',industry:'electronic'},{id:'2368',name:'金像電',industry:'electronic'},
+  {id:'2347',name:'聯強',industry:'electronic'},{id:'2412',name:'中華電',industry:'electronic'},
+  {id:'4904',name:'遠傳',industry:'electronic'},{id:'3045',name:'台灣大',industry:'electronic'},
+  {id:'3008',name:'大立光',industry:'electronic'},{id:'2345',name:'智邦',industry:'electronic'},
+  {id:'6669',name:'緯穎',industry:'electronic'},{id:'2353',name:'宏碁',industry:'electronic'},
+  {id:'2354',name:'鴻準',industry:'electronic'},{id:'2385',name:'群光',industry:'electronic'},
+  {id:'2449',name:'京元電子',industry:'electronic'},{id:'3231',name:'緯創',industry:'electronic'},
+  {id:'2360',name:'致茂',industry:'electronic'},{id:'2313',name:'華通',industry:'electronic'},
+  {id:'8069',name:'元太',industry:'electronic'},
+  {id:'6409',name:'旭隼',industry:'electronic'},{id:'3533',name:'嘉澤',industry:'electronic'},
+  {id:'2352',name:'佳世達',industry:'electronic'},{id:'3653',name:'健策',industry:'electronic'},
+  {id:'6271',name:'同欣電',industry:'electronic'},{id:'2059',name:'川湖',industry:'electronic'},
+  {id:'2404',name:'漢唐',industry:'electronic'},
+  // 金融 finance
+  {id:'2881',name:'富邦金',industry:'finance'},{id:'2882',name:'國泰金',industry:'finance'},
+  {id:'2884',name:'玉山金',industry:'finance'},{id:'2886',name:'兆豐金',industry:'finance'},
+  {id:'2891',name:'中信金',industry:'finance'},{id:'2885',name:'元大金',industry:'finance'},
+  {id:'2888',name:'新光金',industry:'finance'},{id:'2890',name:'永豐金',industry:'finance'},
+  {id:'2883',name:'開發金',industry:'finance'},{id:'2880',name:'華南金',industry:'finance'},
+  {id:'5880',name:'合庫金',industry:'finance'},{id:'2887',name:'台新金',industry:'finance'},
+  {id:'2801',name:'彰銀',industry:'finance'},{id:'2823',name:'中壽',industry:'finance'},
+  {id:'2812',name:'台中銀',industry:'finance'},{id:'5876',name:'上海商銀',industry:'finance'},
+  {id:'6005',name:'群益期',industry:'finance'},{id:'2834',name:'臺企銀',industry:'finance'},
+  {id:'2897',name:'王道銀行',industry:'finance'},{id:'2816',name:'旺旺保',industry:'finance'},
+  // 傳產 traditional
+  {id:'1301',name:'台塑',industry:'traditional'},{id:'1303',name:'南亞',industry:'traditional'},
+  {id:'2002',name:'中鋼',industry:'traditional'},{id:'1326',name:'台化',industry:'traditional'},
+  {id:'2105',name:'正新',industry:'traditional'},{id:'1216',name:'統一',industry:'traditional'},
+  {id:'1102',name:'亞泥',industry:'traditional'},{id:'1101',name:'台泥',industry:'traditional'},
+  {id:'9904',name:'寶成',industry:'traditional'},{id:'2207',name:'和泰車',industry:'traditional'},
+  {id:'1722',name:'台肥',industry:'traditional'},{id:'2912',name:'統一超',industry:'traditional'},
+  {id:'2204',name:'中華',industry:'traditional'},{id:'2106',name:'建大',industry:'traditional'},
+  {id:'1314',name:'中石化',industry:'traditional'},{id:'1434',name:'福懋',industry:'traditional'},
+  {id:'6505',name:'台塑化',industry:'traditional'},{id:'1605',name:'華新',industry:'traditional'},
+  {id:'2201',name:'裕隆',industry:'traditional'},{id:'9910',name:'豐泰',industry:'traditional'},
+  {id:'9921',name:'巨大',industry:'traditional'},{id:'9945',name:'潤泰新',industry:'traditional'},
+  {id:'1504',name:'東元',industry:'traditional'},{id:'2014',name:'中鴻',industry:'traditional'},
+  {id:'1319',name:'東陽',industry:'traditional'},{id:'1227',name:'佳格',industry:'traditional'},
+  {id:'2633',name:'台灣高鐵',industry:'traditional'},
+  // 生技 biotech
+  {id:'4174',name:'浩鼎',industry:'biotech'},{id:'4142',name:'國光生',industry:'biotech'},
+  {id:'4128',name:'中天',industry:'biotech'},{id:'4126',name:'太醫',industry:'biotech'},
+  {id:'6446',name:'藥華藥',industry:'biotech'},{id:'4123',name:'晟德',industry:'biotech'},
+  {id:'4105',name:'東洋',industry:'biotech'},{id:'6472',name:'保瑞',industry:'biotech'},
+  {id:'4163',name:'鐿鈦',industry:'biotech'},{id:'4736',name:'泰博',industry:'biotech'},
+  {id:'1760',name:'寶齡富錦',industry:'biotech'},{id:'4743',name:'合一',industry:'biotech'},
+  {id:'4966',name:'譜瑞-KY',industry:'biotech'},{id:'1707',name:'葡萄王',industry:'biotech'},
+  {id:'1795',name:'美時',industry:'biotech'},{id:'6547',name:'高端疫苗',industry:'biotech'},
+  {id:'6504',name:'南六',industry:'biotech'},
+  // 航運 transport
+  {id:'2603',name:'長榮',industry:'transport'},{id:'2609',name:'陽明',industry:'transport'},
+  {id:'2615',name:'萬海',industry:'transport'},{id:'2610',name:'華航',industry:'transport'},
+  {id:'2618',name:'長榮航',industry:'transport'},{id:'2607',name:'榮運',industry:'transport'},
+  {id:'2606',name:'裕民',industry:'transport'},{id:'2608',name:'嘉里大榮',industry:'transport'},
+  {id:'2617',name:'台航',industry:'transport'},{id:'5604',name:'中連貨',industry:'transport'},
+  // ETF
+  {id:'0050',name:'元大台灣50',industry:'etf'},{id:'0056',name:'元大高股息',industry:'etf'},
+  {id:'006208',name:'富邦台50',industry:'etf'},{id:'00878',name:'國泰永續高股息',industry:'etf'},
+  {id:'00881',name:'國泰台灣5G+',industry:'etf'},{id:'00692',name:'富邦公司治理',industry:'etf'},
+  {id:'00713',name:'元大高息低波',industry:'etf'},{id:'00919',name:'群益台灣精選高息',industry:'etf'},
+  {id:'00929',name:'復華台灣科技優息',industry:'etf'},{id:'00940',name:'元大台灣價值高息',industry:'etf'},
+  {id:'00946',name:'群益台ESG低碳50',industry:'etf'},{id:'00935',name:'野村臺灣創新科技',industry:'etf'},
+  {id:'00757',name:'統一FANG+',industry:'etf'},{id:'00850',name:'元大臺灣ESG永續',industry:'etf'},
+  {id:'00770',name:'國泰北美科技',industry:'etf'},
+  {id:'00662',name:'富邦NASDAQ',industry:'etf'},{id:'00646',name:'元大S&P500',industry:'etf'},
+  {id:'00687B',name:'國泰20年美債',industry:'etf'},{id:'00679B',name:'元大美債20年',industry:'etf'},
 ];
+
+/* ===== 預設產業分類 ===== */
+const PRESET_CATS = [
+  {id:'all',         name:'全部',    color:'#ffd24a', preset:true, icon:'⭐'},
+  {id:'semi',        name:'半導體',  color:'#4fc3f7', preset:true, icon:'🔷'},
+  {id:'electronic',  name:'電子',    color:'#7c3aed', preset:true, icon:'💻'},
+  {id:'finance',     name:'金融',    color:'#059669', preset:true, icon:'🏦'},
+  {id:'traditional', name:'傳產',    color:'#d97706', preset:true, icon:'🏭'},
+  {id:'biotech',     name:'生技',    color:'#ec4899', preset:true, icon:'💊'},
+  {id:'transport',   name:'航運',    color:'#14b8a6', preset:true, icon:'🚢'},
+  {id:'etf',         name:'ETF',     color:'#8b5cf6', preset:true, icon:'📊'},
+  {id:'other',       name:'其他',    color:'#9aa7c7', preset:true, icon:'📌'},
+];
+
+/* ===== 嵌入快取（預設 10 檔真實收盤資料）===== */
+const STOCK_DEFAULTS = {
+  '2330':{name:'台積電',  px:2025.0, ch:-5,    pct:-0.25, open:2030.0, high:2055.0, low:2025.0, vol:30566, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '2317':{name:'鴻海',    px:207.5,  ch:+1.5,  pct:+0.73, open:206.0,  high:209.5,  low:204.5,  vol:39312, sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
+  '2454':{name:'聯發科',  px:1900.0, ch:-25,   pct:-1.30, open:1960.0, high:1965.0, low:1895.0, vol:11656, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '2308':{name:'台達電',  px:1900.0, ch:+60,   pct:+3.26, open:1860.0, high:1980.0, low:1860.0, vol:12064, sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
+  '2412':{name:'中華電',  px:137.0,  ch:-0.5,  pct:-0.36, open:137.5,  high:138.0,  low:137.0,  vol:12592, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '2603':{name:'長榮',    px:197.0,  ch:-1,    pct:-0.51, open:198.5,  high:199.0,  low:196.0,  vol:14106, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '2891':{name:'中信金',  px:53.1,   ch:+0,    pct:+0.00, open:53.1,   high:53.7,   low:52.7,   vol:47288, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '2881':{name:'富邦金',  px:87.2,   ch:-0.8,  pct:-0.91, open:87.9,   high:88.0,   low:87.2,   vol:22352, sig:'觀', trend:'盤整', real:true, date:'2026-04-20'},
+  '3008':{name:'大立光',  px:2710.0, ch:+105,  pct:+4.03, open:2630.0, high:2780.0, low:2630.0, vol:2683,  sig:'觀', trend:'多頭', real:true, date:'2026-04-20'},
+  '2382':{name:'廣達',    px:329.0,  ch:+6,    pct:+1.86, open:320.0,  high:330.5,  low:320.0,  vol:19861, sig:'買', trend:'多頭', real:true, date:'2026-04-20'},
+};
+
+/* ===== 自選股 Watchlist 狀態（localStorage 持久化）===== */
+const WATCHLIST_KEY = 'twstock_watchlist_v1';
+function loadWatchlist(){
+  try {
+    const raw = localStorage.getItem(WATCHLIST_KEY);
+    if(raw){
+      const data = JSON.parse(raw);
+      if(data && Array.isArray(data.stocks)) return data;
+    }
+  } catch(e){}
+  return {
+    stocks: [
+      {id:'2330',tags:[]},{id:'2317',tags:[]},{id:'2454',tags:[]},{id:'2308',tags:[]},
+      {id:'2412',tags:[]},{id:'2603',tags:[]},{id:'2891',tags:[]},{id:'2881',tags:[]},
+      {id:'3008',tags:[]},{id:'2382',tags:[]},
+    ],
+    customCats: [],
+    activeCat: 'all'
+  };
+}
+function saveWatchlist(){
+  try { localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist)); } catch(e){}
+}
+let watchlist = loadWatchlist();
+
+/* 從 watchlist 建出 STOCKS 陣列（每檔優先用快取，否則填 pending placeholder） */
+function buildStocksFromWatchlist(){
+  return watchlist.stocks.map(w => {
+    const d = STOCK_DEFAULTS[w.id];
+    if(d) return {id:w.id, ...d};
+    const m = STOCK_MASTER.find(s=>s.id===w.id);
+    return {
+      id: w.id,
+      name: m ? m.name : w.id,
+      px:0, ch:0, pct:0, open:0, high:0, low:0, vol:0,
+      sig:'觀', trend:'盤整',
+      real:false, date:'', pending:true
+    };
+  });
+}
+let STOCKS = buildStocksFromWatchlist();
+
+/* 分類：取得所有（預設 + 自訂） */
+function getAllCategories(){
+  return [...PRESET_CATS, ...(watchlist.customCats||[])];
+}
+function findCategory(id){
+  return getAllCategories().find(c => c.id === id) || PRESET_CATS[0];
+}
+function isStockInCategory(stockId, catId){
+  if(catId === 'all') return true;
+  const preset = PRESET_CATS.find(c => c.id === catId);
+  if(preset){
+    const master = STOCK_MASTER.find(m => m.id === stockId);
+    // 若 MASTER 沒找到就分類為「其他」
+    if(!master) return catId === 'other';
+    return master.industry === catId;
+  }
+  // 自訂分類：看 watchlist.stocks[].tags
+  const entry = watchlist.stocks.find(w => w.id === stockId);
+  return entry && entry.tags && entry.tags.includes(catId);
+}
+function countStocksInCategory(catId){
+  return watchlist.stocks.filter(w => isStockInCategory(w.id, catId)).length;
+}
+
+/* Watchlist 增刪改 */
+function addStockToWatchlist(id, tags){
+  id = (id||'').trim();
+  if(!id) return false;
+  if(watchlist.stocks.find(s=>s.id===id)){
+    toast(`ℹ️ ${id} 已在自選股中`);
+    return false;
+  }
+  watchlist.stocks.push({id, tags: tags||[]});
+  saveWatchlist();
+  STOCKS = buildStocksFromWatchlist();
+  if(typeof buildSignals === 'function') SIGNALS = buildSignals();
+  renderCategoryChips();
+  renderWatch(); renderRanks();
+  if(typeof renderSignals === 'function') renderSignals();
+  if(typeof renderTopBuy === 'function') renderTopBuy();
+  const m = STOCK_MASTER.find(s=>s.id===id);
+  toast(`✅ 已加入 ${id} ${m?m.name:''}`);
+  // 有網路時嘗試抓最新資料
+  if(location.protocol !== 'file:' && typeof refreshPrices === 'function'){
+    setTimeout(()=>refreshPrices(true), 300);
+  }
+  return true;
+}
+function removeStockFromWatchlist(id){
+  const i = watchlist.stocks.findIndex(s=>s.id===id);
+  if(i<0) return;
+  watchlist.stocks.splice(i, 1);
+  saveWatchlist();
+  STOCKS = buildStocksFromWatchlist();
+  if(typeof buildSignals === 'function') SIGNALS = buildSignals();
+  renderCategoryChips();
+  renderWatch(); renderRanks();
+  if(typeof renderSignals === 'function') renderSignals();
+  if(typeof renderTopBuy === 'function') renderTopBuy();
+  toast(`🗑️ 已移除 ${id}`);
+}
+function toggleStockCategory(stockId, catId){
+  const entry = watchlist.stocks.find(s=>s.id===stockId);
+  if(!entry) return;
+  entry.tags = entry.tags || [];
+  const i = entry.tags.indexOf(catId);
+  if(i>=0) entry.tags.splice(i,1);
+  else entry.tags.push(catId);
+  saveWatchlist();
+  renderStockMenuTags(stockId);
+  renderWatch();
+}
+function addCustomCategory(name, color){
+  name = (name||'').trim();
+  if(!name) return null;
+  const id = 'custom-' + Date.now().toString(36);
+  watchlist.customCats = watchlist.customCats || [];
+  watchlist.customCats.push({id, name, color: color||'#4fc3f7', preset:false});
+  saveWatchlist();
+  renderCategoryChips();
+  renderManageCatsList();
+  toast(`✅ 已新增分類「${name}」`);
+  return id;
+}
+function removeCustomCategory(id){
+  if(!id || !id.startsWith('custom-')) return;
+  watchlist.customCats = (watchlist.customCats||[]).filter(c=>c.id!==id);
+  watchlist.stocks.forEach(s => {
+    if(s.tags) s.tags = s.tags.filter(t => t !== id);
+  });
+  if(watchlist.activeCat === id) watchlist.activeCat = 'all';
+  saveWatchlist();
+  renderCategoryChips();
+  renderManageCatsList();
+  renderWatch();
+}
+function setActiveCategory(id){
+  watchlist.activeCat = id;
+  saveWatchlist();
+  renderCategoryChips();
+  renderWatch();
+  if(typeof buildSignals === 'function') SIGNALS = buildSignals();
+  if(typeof renderSignals === 'function') renderSignals();
+  if(typeof renderTopBuy === 'function') renderTopBuy();
+}
 const STOCK_HIST = {
   '2330': [2055.0, 2080.0, 2085.0, 2030.0, 2025.0],
   '2317': [207.5,  207.5,  207.0,  206.0,  207.5 ],
@@ -613,13 +990,61 @@ const STOCK_HIST = {
   '3008': [2670.0, 2820.0, 2820.0, 2605.0, 2710.0],
   '2382': [323.0,  308.5,  318.5,  323.0,  329.0 ],
 };
-const SIGNALS = [
-  {id:'2330',name:'台積電',type:'前低不跌',action:'買進',px:1085,stop:1065,target:1125,rr:'1:2',tf:'日K',time:'09:45',conf:92},
-  {id:'2603',name:'長榮',  type:'突破前高',action:'追價',px:218,stop:211,target:232,rr:'1:2',tf:'60分K',time:'10:12',conf:88},
-  {id:'2308',name:'台達電',type:'順勢加碼',action:'加碼',px:428,stop:420,target:444,rr:'1:2',tf:'日K',time:'10:28',conf:85},
-  {id:'2881',name:'富邦金',type:'前高不過',action:'減碼',px:86.3,stop:88,target:82,rr:'1:2',tf:'日K',time:'11:02',conf:78},
-  {id:'2382',name:'廣達',  type:'前低不跌',action:'買進',px:295.5,stop:288,target:310,rr:'1:2',tf:'60分K',time:'11:38',conf:81},
-];
+// 策略訊號由真實股價動態產生（獨孤求敗：前高前低法則、順勢加碼、停損紀律）
+// 依 activeCat 自動過濾，讓使用者的分類篩選同步作用於訊號中心
+// 單一股票的策略分析（共用於 SIGNALS 與 Top 建議買進）
+function analyzeStock(s){
+  const hist = STOCK_HIST[s.id] || [];
+  const min5 = hist.length ? Math.min(...hist, s.low) : s.low;
+  const max5 = hist.length ? Math.max(...hist, s.high) : s.high;
+  const absP = Math.abs(s.pct);
+  let type, action, isBuy;
+  if(s.trend==='多頭' && s.pct >= 1.5){
+    type='突破前高'; action='追價'; isBuy=true;
+  } else if(s.trend==='多頭' && s.pct >= 0){
+    type='順勢加碼'; action='加碼'; isBuy=true;
+  } else if(s.trend==='多頭' && s.pct > -1){
+    type='前低不跌'; action='買進'; isBuy=true;
+  } else if(s.trend==='盤整' && s.pct >= 1.5){
+    type='突破前高'; action='追價'; isBuy=true;
+  } else if(s.trend==='空頭' || s.pct <= -1.5){
+    type='前高不過'; action='減碼'; isBuy=false;
+  } else if(s.pct <= -0.5){
+    type='前高不過'; action='減碼'; isBuy=false;
+  } else {
+    return null; // 盤整小幅震盪，不出訊號
+  }
+  const stop = isBuy ? +min5.toFixed(2) : +max5.toFixed(2);
+  const risk = Math.max(0.01, isBuy ? (s.px - stop) : (stop - s.px));
+  const target = isBuy ? +(s.px + risk*2).toFixed(2) : +(s.px - risk*2).toFixed(2);
+  const conf = Math.min(95, Math.max(62, Math.round(65 + absP*7 + (hist.length>=5?5:0))));
+  const score = conf + absP + (s.trend==='多頭'?5 : s.trend==='空頭'?-5 : 0);
+  return {
+    id: s.id, name: s.name, type, action, isBuy,
+    px: +s.px.toFixed(2), stop, target,
+    rr: '1:2', tf: '日K', conf, score,
+    pct: s.pct
+  };
+}
+
+// 策略訊號：自選股（依 activeCat 過濾）產生的訊號列表
+function buildSignals(){
+  const activeCat = (watchlist && watchlist.activeCat) || 'all';
+  const source = STOCKS.filter(s => isStockInCategory(s.id, activeCat) && s.px > 0);
+  const list = source.map(analyzeStock).filter(x=>x);
+  list.sort((a,b)=> b.score - a.score);
+  return list.slice(0, 10);
+}
+let SIGNALS = buildSignals();
+
+// Top 建議買進：只保留買進類（買進/加碼/追價），依信心度+強度排序取前 10
+function buildTopBuy(){
+  const activeCat = (watchlist && watchlist.activeCat) || 'all';
+  const source = STOCKS.filter(s => isStockInCategory(s.id, activeCat) && s.px > 0);
+  const list = source.map(analyzeStock).filter(x => x && x.isBuy);
+  list.sort((a,b)=> b.score - a.score);
+  return list.slice(0, 10);
+}
 
 function renderMarket(){
   document.getElementById('marketStrip').innerHTML = INDICES.map(i=>`
@@ -631,20 +1056,204 @@ function renderMarket(){
 }
 function renderWatch(){
   const el = document.getElementById('watchList');
-  const head = el.querySelector('.w-head').outerHTML;
-  el.innerHTML = head + STOCKS.map(s=>{
+  if(!el) return;
+  const head = `<div class="w-head with-menu"><div>股票</div><div style="text-align:right">現價</div><div style="text-align:right">漲跌幅</div><div style="text-align:center">訊號</div><div></div></div>`;
+  const activeCat = watchlist.activeCat || 'all';
+  const filtered = STOCKS.filter(s => isStockInCategory(s.id, activeCat));
+  const empty = document.getElementById('watchEmpty');
+  if(filtered.length === 0){
+    el.innerHTML = head;
+    el.style.display = 'none';
+    if(empty){
+      empty.style.display = 'block';
+      const catName = findCategory(activeCat).name;
+      empty.innerHTML = activeCat === 'all'
+        ? `📭 自選股清單是空的<br><br>點右上「＋ 加股票」開始加入<br>喜愛的股票吧！`
+        : `📭「${catName}」沒有股票<br><br>點右上「＋ 加股票」加入此分類<br>或切換到「全部」看所有自選股`;
+    }
+    return;
+  }
+  el.style.display = '';
+  if(empty) empty.style.display = 'none';
+  el.innerHTML = head + filtered.map(s=>{
+    const pending = s.pending || !s.real;
     const u = s.ch>=0;
-    const sigBadge = s.sig==='買' ? '<span class="badge buy">買進</span>'
+    const pxStr = pending && s.px===0 ? '—' : s.px.toFixed(2);
+    const pctStr = pending && s.px===0 ? '—' : `${u?'+':''}${s.pct.toFixed(2)}%`;
+    const sigBadge = pending && s.px===0 ? '<span class="badge" style="opacity:.5">讀取中</span>'
+                   : s.sig==='買' ? '<span class="badge buy">買進</span>'
                    : s.sig==='賣' ? '<span class="badge sell">減碼</span>'
                    : '<span class="badge">觀望</span>';
     return `
-      <div class="w-row" onclick="openDetail('${s.id}')">
-        <div class="name"><div class="nm">${s.name}</div><div class="id">${s.id}</div></div>
-        <div class="price ${u?'up':'down'}">${s.px.toFixed(2)}</div>
-        <div class="pct ${u?'up':'down'}">${u?'+':''}${s.pct.toFixed(2)}%</div>
-        <div style="text-align:center">${sigBadge}</div>
+      <div class="w-row with-menu">
+        <div class="name" onclick="openDetail('${s.id}')"><div class="nm">${s.name}</div><div class="id">${s.id}</div></div>
+        <div class="price ${u?'up':'down'}" onclick="openDetail('${s.id}')">${pxStr}</div>
+        <div class="pct ${u?'up':'down'}" onclick="openDetail('${s.id}')">${pctStr}</div>
+        <div style="text-align:center" onclick="openDetail('${s.id}')">${sigBadge}</div>
+        <div class="row-menu" onclick="event.stopPropagation();openStockMenu('${s.id}')" title="編輯">⋮</div>
       </div>`;
   }).join('');
+}
+
+/* === 更新「我的」頁自選股計數 === */
+function updateMineCount(){
+  const el = document.getElementById('mineStockCount');
+  if(el) el.textContent = `${watchlist.stocks.length} 檔 ›`;
+}
+function goToWatchlist(){
+  showView('home');
+  const tabs = document.querySelectorAll('.segtabs .seg');
+  // 第二個 tab 是「自選股」
+  if(tabs[1]) switchSeg(tabs[1], 'watch');
+  setActiveCategory('all');
+}
+
+/* === 分類 chip bar（同時套用到所有容器：自選股 / 訊號中心 / 首頁策略訊號） === */
+function renderCategoryChips(){
+  updateMineCount();
+  const bars = document.querySelectorAll('.cat-chips');
+  if(!bars.length) return;
+  const active = watchlist.activeCat || 'all';
+  const cats = getAllCategories();
+  const html = cats.map(c=>{
+    const cnt = countStocksInCategory(c.id);
+    if(cnt === 0 && c.id !== 'all') return '';
+    const cls = c.id === active ? 'cat-chip active' : 'cat-chip';
+    const icon = c.icon || '📁';
+    return `<div class="${cls}" onclick="setActiveCategory('${c.id}')" style="${c.id===active?'border-color:'+c.color+';color:'+c.color+';background:'+c.color+'22':''}">
+      <span>${icon}</span><span>${c.name}</span><span class="cnt">${cnt}</span>
+    </div>`;
+  }).join('');
+  bars.forEach(bar => { bar.innerHTML = html; });
+}
+
+/* === Modal：加股票 === */
+function openAddStockModal(){
+  document.getElementById('stockSearchInput').value = '';
+  renderStockSearchList();
+  document.getElementById('modalAddStock').style.display = 'flex';
+  setTimeout(()=>document.getElementById('stockSearchInput').focus(), 100);
+}
+function renderStockSearchList(){
+  const q = (document.getElementById('stockSearchInput').value||'').trim().toLowerCase();
+  let list = STOCK_MASTER;
+  let customMatch = null;
+  if(q){
+    list = STOCK_MASTER.filter(s => s.id.toLowerCase().includes(q) || s.name.toLowerCase().includes(q));
+    // 如果輸入是 4 位數代碼但不在 master 中，給一個「手動加入」選項
+    if(/^\d{4,6}[A-Z]?$/i.test(q) && !list.find(s=>s.id.toLowerCase()===q)){
+      customMatch = { id: q.toUpperCase(), name: '（自訂代碼）', industry: 'other', custom: true };
+    }
+  }
+  list = list.slice(0, 60);
+  const el = document.getElementById('stockSearchList');
+  const inList = id => watchlist.stocks.some(w=>w.id===id);
+  const industryLabel = ind => (PRESET_CATS.find(c=>c.id===ind)||{name:''}).name;
+  const rows = [];
+  if(customMatch) rows.push(customMatch);
+  list.forEach(s => rows.push(s));
+  if(rows.length === 0){
+    el.innerHTML = `<div style="text-align:center;color:var(--sub);padding:30px 0;font-size:13px">🔍 找不到「${q}」<br><br>可直接輸入 4 位數股票代碼<br>(例：2330、0050、00878)</div>`;
+    return;
+  }
+  el.innerHTML = rows.map(s=>{
+    const exists = inList(s.id);
+    const badge = exists ? '✓ 已加入' : '＋ 加入';
+    const clickFn = exists ? '' : `onclick="quickAddStock('${s.id}','${s.name.replace(/'/g,'\\\'')}')"`;
+    const cls = exists ? 'search-row in-list' : 'search-row';
+    const sub = s.custom ? '手動輸入代碼（自動分類為：其他）' : industryLabel(s.industry) + ' · ' + s.id;
+    return `<div class="${cls}" ${clickFn}>
+      <div class="meta"><div class="nm">${s.name}</div><div class="sub">${sub}</div></div>
+      <div class="add">${badge}</div>
+    </div>`;
+  }).join('');
+}
+function quickAddStock(id, name){
+  if(addStockToWatchlist(id)){
+    renderStockSearchList();
+    setTimeout(closeAllModals, 400);
+  }
+}
+
+/* === Modal：管理分類 === */
+function openManageCatsModal(){
+  document.getElementById('newCatName').value = '';
+  renderManageCatsList();
+  document.getElementById('modalManageCats').style.display = 'flex';
+}
+function renderManageCatsList(){
+  const el = document.getElementById('manageCatsList');
+  if(!el) return;
+  const cats = getAllCategories().filter(c => c.id !== 'all');
+  el.innerHTML = cats.map(c=>{
+    const cnt = countStocksInCategory(c.id);
+    const rmBtn = c.preset
+      ? `<span style="font-size:11px;color:var(--sub)">預設</span>`
+      : `<button class="rm" onclick="removeCustomCategory('${c.id}')">刪除</button>`;
+    return `<div class="cat-manage-row ${c.preset?'preset':''}">
+      <div class="dot" style="background:${c.color}"></div>
+      <div class="nm">${c.icon||'📁'} ${c.name}</div>
+      <div class="cnt">${cnt} 檔</div>
+      ${rmBtn}
+    </div>`;
+  }).join('');
+}
+function doAddCustomCategory(){
+  const name = document.getElementById('newCatName').value.trim();
+  const color = document.getElementById('newCatColor').value;
+  if(!name){ toast('請輸入分類名稱'); return; }
+  if((watchlist.customCats||[]).some(c=>c.name===name) || PRESET_CATS.some(c=>c.name===name)){
+    toast('分類名稱已存在');
+    return;
+  }
+  addCustomCategory(name, color);
+  document.getElementById('newCatName').value = '';
+}
+
+/* === Modal：股票選單 === */
+let _currentMenuStock = null;
+function openStockMenu(id){
+  _currentMenuStock = id;
+  const stock = STOCKS.find(s=>s.id===id);
+  const master = STOCK_MASTER.find(s=>s.id===id);
+  const name = stock ? stock.name : (master ? master.name : id);
+  document.getElementById('stockMenuTitle').textContent = `${name} (${id})`;
+  const industry = master ? findCategory(master.industry).name : '其他';
+  document.getElementById('stockIndustryNote').textContent = `產業：${industry}（預設分類自動歸類，不可修改）`;
+  renderStockMenuTags(id);
+  document.getElementById('modalStockMenu').style.display = 'flex';
+}
+function renderStockMenuTags(id){
+  const el = document.getElementById('stockMenuTags');
+  if(!el) return;
+  const entry = watchlist.stocks.find(s=>s.id===id);
+  const tags = (entry && entry.tags) || [];
+  const customCats = watchlist.customCats || [];
+  if(customCats.length === 0){
+    el.innerHTML = `<div style="font-size:12px;color:var(--sub);padding:12px;background:var(--card2);border-radius:10px;text-align:center">還沒有自訂分類<br><br>點「🏷️ 管理分類」先新增幾個分類</div>`;
+    return;
+  }
+  el.innerHTML = customCats.map(c=>{
+    const on = tags.includes(c.id);
+    return `<span class="tag-chip ${on?'on':''}" onclick="toggleStockCategory('${id}','${c.id}')" style="${on?'border-color:'+c.color+';color:'+c.color+';background:'+c.color+'22':''}">
+      ${on?'✓ ':''}${c.name}
+    </span>`;
+  }).join('');
+}
+function confirmRemoveStock(){
+  if(!_currentMenuStock) return;
+  if(confirm(`確定要從自選股移除「${_currentMenuStock}」？`)){
+    removeStockFromWatchlist(_currentMenuStock);
+    closeAllModals();
+  }
+}
+
+function closeAllModals(){
+  ['modalAddStock','modalManageCats','modalStockMenu'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  _currentMenuStock = null;
 }
 function renderRanks(){
   const up = [...STOCKS].sort((a,b)=>b.pct-a.pct).slice(0,5);
@@ -665,29 +1274,89 @@ function renderRanks(){
   document.getElementById('rankDown').innerHTML = render(down);
 }
 function renderSignals(){
-  const html = SIGNALS.map(s=>{
-    const isBuy = s.action==='買進' || s.action==='追價' || s.action==='加碼';
-    const tagBg = isBuy ? 'background:rgba(239,68,68,.15);color:#ff5a5f' : 'background:rgba(52,211,153,.15);color:#34d399';
-    return `
-      <div class="sig-card" onclick="openDetail('${s.id}')">
-        <div class="sig-top">
-          <div>
-            <div class="sig-title">${s.name} <span style="color:var(--sub);font-size:12px;font-weight:400">${s.id}</span></div>
-            <div class="sig-sub">${s.tf} · ${s.time} · 信心度 ${s.conf}%</div>
+  let html;
+  if(!SIGNALS || SIGNALS.length === 0){
+    const activeCat = (watchlist && watchlist.activeCat) || 'all';
+    const catName = findCategory(activeCat).name;
+    const totalStocks = STOCKS.length;
+    const catStocks = STOCKS.filter(s=>isStockInCategory(s.id, activeCat)).length;
+    let msg;
+    if(totalStocks === 0){
+      msg = `📭 尚未加入任何自選股<br><br>請先到「自選股」加入想觀察的股票<br>訊號會依據真實股價自動產生`;
+    } else if(catStocks === 0){
+      msg = `📭「${catName}」分類沒有股票<br><br>切換到「全部」或其他有股票的分類<br>即可看到策略訊號`;
+    } else {
+      msg = `📊「${catName}」目前無符合條件的訊號<br><br>當前股價處於盤整小幅震盪區間<br>獨孤求敗策略建議：觀望等待明確方向`;
+    }
+    html = `<div style="text-align:center;padding:60px 20px;color:var(--sub);font-size:13px;line-height:1.8">${msg}</div>`;
+  } else {
+    html = SIGNALS.map(s=>{
+      const isBuy = s.action==='買進' || s.action==='追價' || s.action==='加碼';
+      const tagBg = isBuy ? 'background:rgba(239,68,68,.15);color:#ff5a5f' : 'background:rgba(52,211,153,.15);color:#34d399';
+      return `
+        <div class="sig-card" onclick="openDetail('${s.id}')">
+          <div class="sig-top">
+            <div>
+              <div class="sig-title">${s.name} <span style="color:var(--sub);font-size:12px;font-weight:400">${s.id}</span></div>
+              <div class="sig-sub">${s.tf} · 信心度 ${s.conf}%</div>
+            </div>
+            <div class="sig-tag" style="${tagBg}">${s.type} · ${s.action}</div>
           </div>
-          <div class="sig-tag" style="${tagBg}">${s.type} · ${s.action}</div>
-        </div>
-        <div class="sig-body">
-          <div class="sig-kv"><div class="k">進場價</div><div class="v">${s.px}</div></div>
-          <div class="sig-kv"><div class="k">停損價</div><div class="v down">${s.stop}</div></div>
-          <div class="sig-kv"><div class="k">目標價</div><div class="v up">${s.target}</div></div>
-        </div>
-        <div class="sig-rr"><div class="loss" style="width:33%"></div><div class="gain" style="width:67%"></div></div>
-        <div class="sig-foot"><span>風報比 ${s.rr}</span><span>點擊查看K線 →</span></div>
-      </div>`;
+          <div class="sig-body">
+            <div class="sig-kv"><div class="k">進場價</div><div class="v">${s.px}</div></div>
+            <div class="sig-kv"><div class="k">停損價</div><div class="v down">${s.stop}</div></div>
+            <div class="sig-kv"><div class="k">目標價</div><div class="v up">${s.target}</div></div>
+          </div>
+          <div class="sig-rr"><div class="loss" style="width:33%"></div><div class="gain" style="width:67%"></div></div>
+          <div class="sig-foot"><span>風報比 ${s.rr}</span><span>點擊查看K線 →</span></div>
+        </div>`;
+    }).join('');
+  }
+  const el1 = document.getElementById('signalList');
+  const el2 = document.getElementById('signalList2');
+  if(el1) el1.innerHTML = html;
+  if(el2) el2.innerHTML = html;
+}
+
+// 首頁：策略建議買進 Top 10（以 watchlist → analyzeStock 產生 → 只取買進）
+function renderTopBuy(){
+  const el = document.getElementById('topBuyList');
+  const empty = document.getElementById('topBuyEmpty');
+  if(!el) return;
+  const top = buildTopBuy();
+  const activeCat = (watchlist && watchlist.activeCat) || 'all';
+  const catName = findCategory(activeCat).name;
+  if(top.length === 0){
+    el.style.display = 'none';
+    if(empty){
+      empty.style.display = 'block';
+      const totalStocks = STOCKS.length;
+      const catStocks = STOCKS.filter(s=>isStockInCategory(s.id, activeCat)).length;
+      if(totalStocks === 0){
+        empty.innerHTML = `📭 尚未加入任何自選股<br><br>點右上「＋ 加股票」開始加入<br>系統會自動分析並推薦買進標的`;
+      } else if(catStocks === 0){
+        empty.innerHTML = `📭「${catName}」分類沒有股票<br><br>切換到「全部」或加入股票到此分類`;
+      } else {
+        empty.innerHTML = `📊「${catName}」目前無買進訊號<br><br>當前股價處於盤整或下跌區間<br>獨孤求敗策略建議：觀望等待明確多頭訊號`;
+      }
+    }
+    return;
+  }
+  el.style.display = '';
+  if(empty) empty.style.display = 'none';
+  const head = `<div class="w-head" style="grid-template-columns:36px 1.3fr 1fr 0.9fr 0.9fr"><div style="text-align:center">#</div><div>股票</div><div style="text-align:right">現價</div><div style="text-align:right">漲跌</div><div style="text-align:center">訊號</div></div>`;
+  el.innerHTML = head + top.map((t,i)=>{
+    const tagStyle = 'background:rgba(239,68,68,.18);color:#ff5a5f;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-block';
+    const rankColor = i===0 ? '#ffd24a' : i===1 ? '#e5e7eb' : i===2 ? '#d97706' : 'var(--sub)';
+    const u = t.pct >= 0;
+    return `<div class="w-row" style="grid-template-columns:36px 1.3fr 1fr 0.9fr 0.9fr" onclick="openDetail('${t.id}')">
+      <div style="text-align:center;font-weight:800;color:${rankColor};font-size:14px">${i+1}</div>
+      <div class="name"><div class="nm">${t.name}</div><div class="id">${t.id} · 信心 ${t.conf}%</div></div>
+      <div class="price ${u?'up':'down'}">${t.px.toFixed(2)}</div>
+      <div class="pct ${u?'up':'down'}">${u?'+':''}${t.pct.toFixed(2)}%</div>
+      <div style="text-align:center"><span style="${tagStyle}">${t.action}</span></div>
+    </div>`;
   }).join('');
-  document.getElementById('signalList').innerHTML = html;
-  document.getElementById('signalList2').innerHTML = html;
 }
 
 function showView(v){
@@ -699,8 +1368,9 @@ function showView(v){
 function switchSeg(el, seg){
   el.parentElement.querySelectorAll('.seg').forEach(s=>s.classList.remove('active'));
   el.classList.add('active');
-  ['home','rank','sig'].forEach(k=>{
-    document.getElementById('seg-'+k).style.display = (k===seg?'block':'none');
+  ['home','watch','rank','sig'].forEach(k=>{
+    const elSeg = document.getElementById('seg-'+k);
+    if(elSeg) elSeg.style.display = (k===seg?'block':'none');
   });
 }
 function setTF(el, tf){
@@ -931,9 +1601,13 @@ document.addEventListener('touchend', e=>{
   lastTouch = now;
 }, {passive:false});
 
-/* ===== FinMind 真實資料串接（三層 CORS fallback） ===== */
+/* ===== v9：改用 TWSE OpenAPI + TPEX OpenAPI（免費無限制，一次抓全市場）===== */
+// codetabs 主要代理（快，但對 >2MB 的大 payload 會吐 0 bytes）
+// jina.ai 支援大 payload（4MB+），作為大檔 fallback
 const FINMIND_ENDPOINTS = [
+  { name: 'codetabs',  build: u => 'https://api.codetabs.com/v1/proxy/?quest=' + u },
   { name: '直連',      build: u => u },
+  { name: 'jina',      build: u => 'https://r.jina.ai/' + u },
   { name: 'corsproxy', build: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
   { name: 'allorigins',build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) }
 ];
@@ -942,28 +1616,88 @@ let finmindLastUpdate = null;
 
 function daysAgoStr(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 
-async function finmindTry(url, label){
-  const res = await fetch(url, { cache:'no-cache' });
-  if(!res.ok) throw new Error(`${label} HTTP ${res.status}`);
-  const j = await res.json();
-  if(j.status !== 200) throw new Error(`${label} ${j.msg||'非 200'}`);
-  return j.data || [];
+// 從 FinMind 回傳的日 K rows 自動判定趨勢（多頭 / 空頭 / 盤整）
+// 規則：
+//   MA5 > MA20 且 現價 > MA20 → 多頭
+//   MA5 < MA20 且 現價 < MA20 → 空頭
+//   其他情境（震盪、均線糾結）  → 盤整
+// 若資料筆數不足則 fallback 至短期 trend：連續 3 根 K 方向
+function computeTrendFromRows(rows){
+  if(!rows || rows.length < 3) return '盤整';
+  const closes = rows.map(r=>r.close);
+  const avg = (arr) => arr.reduce((a,b)=>a+b,0) / arr.length;
+  const last = closes[closes.length-1];
+  if(closes.length >= 20){
+    const ma5  = avg(closes.slice(-5));
+    const ma20 = avg(closes.slice(-20));
+    if(ma5 > ma20 * 1.005 && last > ma20) return '多頭';
+    if(ma5 < ma20 * 0.995 && last < ma20) return '空頭';
+    return '盤整';
+  }
+  if(closes.length >= 5){
+    const ma5 = avg(closes.slice(-5));
+    if(last > ma5 * 1.01) return '多頭';
+    if(last < ma5 * 0.99) return '空頭';
+    return '盤整';
+  }
+  // 只有 3~4 根：看方向
+  const first = closes[0];
+  if(last > first * 1.02) return '多頭';
+  if(last < first * 0.98) return '空頭';
+  return '盤整';
 }
 
-async function finmindFetch(code, start, end){
-  const raw = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${code}&start_date=${start}&end_date=${end}`;
-  if(finmindEndpoint){
-    return await finmindTry(finmindEndpoint.build(raw), finmindEndpoint.name);
+// 從 FinMind 日 K rows 動態更新 STOCK_HIST[id]（最近 5 日收盤）
+function updateHistFromRows(id, rows){
+  if(!rows || rows.length === 0) return;
+  const closes = rows.slice(-5).map(r=>+r.close.toFixed(2));
+  if(closes.length >= 2) STOCK_HIST[id] = closes;
+}
+
+// 由 trend + pct 推導 sig 標籤（買/賣/觀），讓自選股列表右側 badge 也會動
+function computeSig(trend, pct){
+  if(trend === '多頭' && pct >= 0) return '買';
+  if(trend === '空頭' || pct <= -1) return '賣';
+  return '觀';
+}
+
+// 讀 response 為文字並嘗試當 JSON parse
+// 支援：(1) 空 body（返回 null，讓外層 fallback）(2) jina.ai 的 markdown 前綴（自動剝離）
+async function readJsonTolerant(res, epName){
+  const txt = await res.text();
+  if(!txt || txt.length < 2) return null; // 空 body，視為失敗
+  // jina.ai 會加 "Title: ...\nMarkdown Content:\n[...]"
+  // 找到第一個 [ 或 { 作為 JSON 起點
+  let start = -1;
+  for(let i=0; i<Math.min(txt.length, 2000); i++){
+    const c = txt[i];
+    if(c === '[' || c === '{'){ start = i; break; }
   }
+  if(start < 0) return null;
+  const body = txt.slice(start);
+  return JSON.parse(body);
+}
+
+// 通用代理嘗試 + 端點鎖定；locked 失敗時自動 fallback
+async function proxyFetchJson(rawUrl, label){
+  const order = finmindEndpoint
+    ? [finmindEndpoint, ...FINMIND_ENDPOINTS.filter(e=>e.name!==finmindEndpoint.name)]
+    : FINMIND_ENDPOINTS;
   let lastErr;
   const tried = [];
-  for(const ep of FINMIND_ENDPOINTS){
+  for(const ep of order){
     try{
-      if(window.updateProgress) window.updateProgress(`測試 ${ep.name}...`);
-      const data = await finmindTry(ep.build(raw), ep.name);
-      finmindEndpoint = ep;
-      console.log(`FinMind 端點鎖定：${ep.name}`);
-      return data;
+      if(window.updateProgress) window.updateProgress(`${ep.name} (${label})...`);
+      const res = await fetch(ep.build(rawUrl), { cache:'no-cache' });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const j = await readJsonTolerant(res, ep.name);
+      if(j === null) throw new Error('空 body 或無 JSON');
+      // 鎖定第一個成功的端點（若尚未鎖定）
+      if(!finmindEndpoint){
+        finmindEndpoint = ep;
+        console.log(`代理端點鎖定：${ep.name}`);
+      }
+      return j;
     }catch(e){
       tried.push(`${ep.name}:${e.message}`);
       lastErr = e;
@@ -974,7 +1708,288 @@ async function finmindFetch(code, start, end){
   throw err;
 }
 
+// ROC 日期 "1150421" → "2026-04-21"（民國+1911）
+function rocToIso(roc){
+  if(!roc) return null;
+  const s = String(roc).trim();
+  if(s.length < 5) return null;
+  // 可能是 "1150421" 或 "115/04/21"
+  const clean = s.replace(/\//g,'');
+  const y = parseInt(clean.slice(0, clean.length-4), 10) + 1911;
+  const m = clean.slice(-4, -2);
+  const d = clean.slice(-2);
+  return `${y}-${m}-${d}`;
+}
+
+// 一次抓 TWSE 全上市個股日成交資訊（約 2000+ 檔）
+// https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL
+async function fetchTwseEodAll(){
+  const raw = 'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL';
+  const j = await proxyFetchJson(raw, 'TWSE');
+  if(!Array.isArray(j)) throw new Error('TWSE 回傳格式非陣列');
+  const map = {};
+  const today = new Date().toISOString().slice(0,10);
+  for(const r of j){
+    const code = r.Code;
+    if(!code) continue;
+    const close = parseFloat(r.ClosingPrice);
+    if(!isFinite(close) || close <= 0) continue; // 無成交
+    const open = parseFloat(r.OpeningPrice) || close;
+    const high = parseFloat(r.HighestPrice) || close;
+    const low  = parseFloat(r.LowestPrice)  || close;
+    const ch   = parseFloat(r.Change) || 0;
+    const vol  = parseInt(r.TradeVolume, 10) || 0;
+    map[code] = {
+      name: r.Name, close, open, high, low, ch,
+      vol: Math.round(vol/1000), // 轉張
+      date: today, market: 'tse'
+    };
+  }
+  return map;
+}
+
+// 一次抓 TPEX 全上櫃日收盤
+// https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes
+async function fetchTpexEodAll(){
+  const raw = 'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes';
+  const j = await proxyFetchJson(raw, 'TPEX');
+  if(!Array.isArray(j)) throw new Error('TPEX 回傳格式非陣列');
+  const map = {};
+  for(const r of j){
+    const code = r.SecuritiesCompanyCode || r.Code;
+    if(!code) continue;
+    const close = parseFloat(r.Close || r.ClosingPrice);
+    if(!isFinite(close) || close <= 0) continue;
+    const open = parseFloat(r.Open || r.OpeningPrice) || close;
+    const high = parseFloat(r.High || r.HighestPrice) || close;
+    const low  = parseFloat(r.Low  || r.LowestPrice)  || close;
+    const ch   = parseFloat(r.Change) || 0;
+    const vol  = parseInt(r.TradingShares || r.TradeVolume, 10) || 0;
+    const dateIso = rocToIso(r.Date) || new Date().toISOString().slice(0,10);
+    map[code] = {
+      name: r.CompanyName || r.Name, close, open, high, low, ch,
+      vol: Math.round(vol/1000),
+      date: dateIso, market: 'otc'
+    };
+  }
+  return map;
+}
+
+// 每日收盤累積：{ "YYYY-MM-DD": { "2330": close, "2454": close, ... } }
+// 用來補足 MA20 所需的 20 天歷史（單次 TWSE OpenAPI 僅給當日）
+const DAILY_HIST = (()=>{
+  try{ return JSON.parse(localStorage.getItem('twstock_daily_hist_v1')||'{}'); }catch(e){ return {}; }
+})();
+function saveDailyHist(){
+  try{
+    // 只保留最近 45 天，避免 localStorage 爆掉
+    const keys = Object.keys(DAILY_HIST).sort();
+    if(keys.length > 45){
+      for(const k of keys.slice(0, keys.length-45)) delete DAILY_HIST[k];
+    }
+    localStorage.setItem('twstock_daily_hist_v1', JSON.stringify(DAILY_HIST));
+  }catch(e){}
+}
+// 從累積的每日快照合成某檔股票的歷史收盤陣列（依日期升冪）
+function buildHistFromDaily(code){
+  const dates = Object.keys(DAILY_HIST).sort();
+  const closes = [];
+  for(const d of dates){
+    const c = DAILY_HIST[d][code];
+    if(isFinite(c)) closes.push(c);
+  }
+  return closes; // 可能很少（剛開始用），會 fallback 至短期 trend 判定
+}
+
 let finmindLastError = null;
+
+/* ===== TWSE MIS 盤中即時報價（15 秒延遲） ===== */
+// 上市(TSE)/上櫃(OTC) 市場歸屬快取：減少 URL 長度
+const stockMarket = JSON.parse(localStorage.getItem('twstock_market_v1') || '{}');
+function saveStockMarket(){
+  try{ localStorage.setItem('twstock_market_v1', JSON.stringify(stockMarket)); }catch(e){}
+}
+
+// 判斷台股市場狀態
+// 台股：週一至週五 09:00-13:30（台北時區），以台北時間判讀
+// 重要：MIS 在 13:30 收盤後一直到當日 23:59 仍保留「今日最終收盤」，
+//       而 TWSE OpenAPI STOCK_DAY_ALL 要到 19:00-20:00 才會發布當日 EOD。
+//       所以 13:30-23:59 這段「post-close」應優先走 MIS 拿今日收盤，而不是 EOD（會抓到昨日）。
+function getMarketStatus(){
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei', hour12: false,
+    weekday: 'short', hour: '2-digit', minute: '2-digit'
+  });
+  const parts = fmt.formatToParts(now);
+  const weekday = parts.find(p=>p.type==='weekday').value;
+  const hour   = parseInt(parts.find(p=>p.type==='hour').value, 10);
+  const minute = parseInt(parts.find(p=>p.type==='minute').value, 10);
+  const m = hour*60 + minute;
+  if(weekday === 'Sat' || weekday === 'Sun') return 'holiday';
+  if(m >= 9*60 && m <= 13*60 + 30) return 'open';       // 盤中 09:00-13:30
+  if(m >= 8*60 + 30 && m < 9*60) return 'pre-open';     // 盤前試撮 08:30-09:00
+  if(m > 13*60 + 30) return 'post-close';               // 盤後 13:30-23:59（MIS 仍有今日收盤）
+  return 'closed';                                       // 00:00-08:30（MIS 可能已清空）
+}
+
+// 更新頂端市場狀態列 UI
+function updateMarketBadge(){
+  const dot  = document.getElementById('marketStatusDot');
+  const text = document.getElementById('marketStatusText');
+  if(!dot || !text) return;
+  const s = getMarketStatus();
+  const map = {
+    'open':       { color:'#22c55e', label:'🟢 盤中 · 即時報價（15 秒延遲）' },
+    'pre-open':   { color:'#facc15', label:'🟡 盤前試撮 · 08:30-09:00' },
+    'post-close': { color:'#fb923c', label:'🟠 盤後 · 顯示今日最終收盤' },
+    'closed':     { color:'#ef4444', label:'🔴 已收盤 · 顯示最近一日 EOD' },
+    'holiday':    { color:'#6b7ba3', label:'⚪ 非交易日' }
+  };
+  const cfg = map[s] || map.closed;
+  dot.style.background = cfg.color;
+  text.textContent = cfg.label;
+  text.style.color = cfg.color;
+}
+
+// 單次 MIS 批次抓取（URL 長度限制，建議 ≤40 檔）
+async function twseMisFetchBatch(codes){
+  const parts = codes.map(c=>{
+    if(stockMarket[c] === 'tse') return `tse_${c}.tw`;
+    if(stockMarket[c] === 'otc') return `otc_${c}.tw`;
+    return `tse_${c}.tw|otc_${c}.tw`; // 未知：兩邊都試
+  });
+  const exCh = parts.join('|');
+  const raw = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${exCh}&json=1&delay=0&_=${Date.now()}`;
+  // MIS 無 CORS header → 必須過代理；優先用已鎖定的 FinMind endpoint
+  const order = finmindEndpoint
+    ? [finmindEndpoint, ...FINMIND_ENDPOINTS.filter(e=>e.name!==finmindEndpoint.name)]
+    : FINMIND_ENDPOINTS;
+  let lastErr;
+  for(const ep of order){
+    if(ep.name === '直連') continue; // MIS 沒 CORS，直連必敗
+    try{
+      const res = await fetch(ep.build(raw), { cache:'no-cache' });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const j = await res.json();
+      if(!j || !Array.isArray(j.msgArray)) throw new Error('MIS 回傳格式錯誤');
+      return j.msgArray;
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('MIS 代理全失敗');
+}
+
+// 盤中即時刷新：對所有 STOCKS 跑 MIS，更新 px/ch/pct/open/high/low/vol
+async function refreshFromMis(){
+  const BATCH = 40;
+  const targets = STOCKS.map(s=>s.id);
+  let ok = 0, fail = 0;
+  for(let i=0; i<targets.length; i+=BATCH){
+    const batch = targets.slice(i, i+BATCH);
+    if(window.updateProgress) window.updateProgress(`MIS 即時 ${i+batch.length}/${targets.length}...`);
+    try{
+      const msgs = await twseMisFetchBatch(batch);
+      for(const m of msgs){
+        const id = m.c;
+        if(m.ex){ stockMarket[id] = m.ex; } // 快取市場歸屬
+        const z = parseFloat(m.z);
+        const y = parseFloat(m.y);
+        if(!isFinite(z) || z <= 0) continue; // 今日無成交 / 停牌
+        const s = STOCKS.find(x=>x.id === id);
+        if(!s) continue;
+        const ch = +(z - y).toFixed(2);
+        const pct = y ? +(ch/y*100).toFixed(2) : 0;
+        s.px = +z.toFixed(2);
+        s.ch = ch;
+        s.pct = pct;
+        s.open = parseFloat(m.o) || z;
+        s.high = parseFloat(m.h) || z;
+        s.low  = parseFloat(m.l) || z;
+        s.vol  = parseInt(m.v) || s.vol || 0;
+        s.date = (m.d || '').replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') || new Date().toISOString().slice(0,10);
+        s.misTime = m.t || '';
+        s.real = true;
+        s.live = true;
+        s.pending = false;
+        s.sig = computeSig(s.trend || '盤整', s.pct); // pct 變了要重算 sig
+        ok++;
+      }
+    }catch(e){
+      console.warn('MIS batch failed:', e.message);
+      fail += batch.length;
+    }
+    await new Promise(r=>setTimeout(r, 150));
+  }
+  saveStockMarket();
+  return { ok, fail };
+}
+
+// 歷史資料（trend/hist）是否已初始化過
+let initialHistoryFetched = false;
+
+// 統一刷新入口：根據市場狀態選擇 MIS 或 FinMind
+async function refreshPrices(silent=false){
+  if(location.protocol === 'file:'){
+    if(!silent) toast(`📦 本機模式 · 使用嵌入資料`);
+    updateMarketBadge();
+    return { ok: STOCKS.length, fail: 0, embedded: true };
+  }
+  const status = getMarketStatus();
+  // 首次一定要先抓 EOD 建立 trend/hist；成功後標記，避免 60 秒內再抓一次
+  let justFetchedEod = false;
+  if(!initialHistoryFetched){
+    if(!silent) toast('📡 首次連線：抓取歷史資料建立策略...');
+    const r = await refreshFromFinMind(silent);
+    initialHistoryFetched = (r.ok > 0);
+    justFetchedEod = (r.ok > 0);
+  }
+  // 盤中 / 盤前 / 盤後：都用 MIS 拿今日報價（MIS 收盤後仍保留當日最終收盤至午夜）
+  if(status === 'open' || status === 'pre-open' || status === 'post-close'){
+    try{
+      const mis = await refreshFromMis();
+      if(mis.ok > 0){
+        SIGNALS = buildSignals();
+        renderWatch(); renderRanks(); renderSignals(); renderTopBuy();
+        finmindLastUpdate = new Date();
+        const srcEl = document.getElementById('snapshotSource');
+        const dateEl = document.getElementById('snapshotDate');
+        const srcLabel = status === 'post-close'
+          ? '· TWSE MIS 今日收盤'
+          : '· TWSE MIS 即時（15 秒延遲）';
+        if(srcEl) srcEl.textContent = srcLabel;
+        if(dateEl){
+          const first = STOCKS.find(s=>s.live && s.date);
+          dateEl.textContent = first ? first.date : new Date().toISOString().slice(0,10);
+        }
+        updateMarketBadge();
+        updateDataSourceBadge(mis.ok, mis.fail);
+        if(currentStock){
+          const u = currentStock.ch>=0;
+          const pxEl = document.getElementById('dPx');
+          if(pxEl){ pxEl.textContent = currentStock.px.toFixed(2); pxEl.className = 'd-px '+(u?'up':'down'); }
+        }
+        if(!silent){
+          const tag = status === 'post-close' ? '🟠 盤後' : '🟢 即時';
+          toast(`${tag} ${mis.ok}/${STOCKS.length}`);
+        }
+        return mis;
+      }
+      if(!silent) toast('MIS 無資料，改抓 TWSE 日線');
+    }catch(e){
+      console.warn('MIS 整批失敗：', e.message);
+      if(!silent) toast(`MIS 失敗（${e.message}），改抓 TWSE 日線`);
+    }
+  }
+  // 收盤 / 假日 / MIS 全失敗 → TWSE OpenAPI 日線
+  // 若剛才初始 EOD 就拉成功，盤中這次就不用再拉一次 4MB 大檔
+  if(justFetchedEod){
+    updateMarketBadge();
+    return { ok: STOCKS.filter(s=>s.real).length, fail: 0, skipped: true };
+  }
+  const fm = await refreshFromFinMind(silent);
+  updateMarketBadge();
+  return fm;
+}
 
 // 即時進度顯示（徽章首行）
 window.updateProgress = function(msg){
@@ -992,65 +2007,125 @@ window.updateProgress = function(msg){
   if(p) p.textContent = '⏳ ' + msg;
 };
 
+// ─── 一鍵更新：頂端綠色按鈕 ───
+async function oneClickUpdate(){
+  const btn = document.getElementById('btnOneClickUpdate');
+  if(btn){ btn.disabled = true; btn.style.opacity = 0.6; btn.textContent = '⏳ 更新中...'; }
+  try{
+    if(location.protocol === 'file:'){
+      toast('⚠️ 本機 file:// 無法連線，請用 GitHub Pages 網址開啟');
+      return;
+    }
+    // 強制解鎖 endpoint，這樣會重新掃三個端點挑能通的
+    finmindEndpoint = null;
+    const { ok, fail } = await refreshPrices(false);
+    const el = document.getElementById('snapshotLastUpdate');
+    if(el){
+      const now = new Date();
+      const t = now.toLocaleTimeString('zh-TW', { hour12: false });
+      el.textContent = `上次更新 ${t} · ${ok}/${STOCKS.length} 檔成功`;
+    }
+  }catch(e){
+    toast(`❌ 更新失敗：${e.message}`);
+  }finally{
+    if(btn){ btn.disabled = false; btn.style.opacity = 1; btn.textContent = '🔄 一鍵更新'; }
+  }
+}
+
 async function refreshFromFinMind(silent=false){
   // file:// 下瀏覽器封鎖所有跨域 fetch，直接用嵌入資料
   if(location.protocol === 'file:'){
     if(!silent) toast(`📦 本機模式 · 使用嵌入資料（截至 ${DATA_SNAPSHOT_DATE}）`);
     return { ok: STOCKS.length, fail: 0, embedded: true };
   }
-  const start = daysAgoStr(14);
-  const end = daysAgoStr(0);
-  window.updateProgress('準備連線 FinMind...');
-  if(!silent) toast('📡 連線 FinMind 中...');
+  window.updateProgress('準備連線 TWSE OpenAPI...');
+  if(!silent) toast('📡 連線 TWSE + TPEX（一次抓全市場）...');
   let ok=0, fail=0;
   const errs = [];
 
-  async function fetchOne(s){
-    try{
-      const rows = await finmindFetch(s.id, start, end);
-      if(!rows.length){ fail++; errs.push(`${s.id}:無資料`); return; }
-      rows.sort((a,b)=>a.date.localeCompare(b.date));
-      const latest = rows[rows.length-1];
-      const prev = rows.length>=2 ? rows[rows.length-2] : null;
-      const ch = prev ? +(latest.close - prev.close).toFixed(2) : 0;
-      const pct = prev && prev.close ? +(ch/prev.close*100).toFixed(2) : 0;
-      s.px = +latest.close.toFixed(2);
-      s.ch = ch;
-      s.pct = pct;
-      s.open = +latest.open.toFixed(2);
-      s.high = +latest.max.toFixed(2);
-      s.low  = +latest.min.toFixed(2);
-      s.vol  = Math.round(latest.Trading_Volume/1000);
-      s.date = latest.date;
-      s.real = true;
-      ok++;
-    }catch(e){
-      console.warn(`${s.id} 失敗：`, e.message);
-      errs.push(`${s.id}:${e.message}`);
-      fail++;
-    }
+  // 1) 一次抓上市 + 上櫃
+  let tseMap = {}, tpexMap = {};
+  try{
+    window.updateProgress('抓 TWSE 全上市日成交...');
+    tseMap = await fetchTwseEodAll();
+  }catch(e){
+    console.warn('TWSE 失敗：', e.message);
+    errs.push('TWSE:'+e.message);
+  }
+  try{
+    window.updateProgress('抓 TPEX 全上櫃日成交...');
+    tpexMap = await fetchTpexEodAll();
+  }catch(e){
+    console.warn('TPEX 失敗：', e.message);
+    errs.push('TPEX:'+e.message);
+  }
+  const allMap = Object.assign({}, tseMap, tpexMap);
+  const codeCount = Object.keys(allMap).length;
+  if(codeCount === 0){
+    finmindLastError = errs.slice(0,3).join(' · ') || '全市場資料源無回應';
+    finmindLastUpdate = new Date();
+    updateDataSourceBadge(0, STOCKS.length);
+    if(!silent) toast(`❌ TWSE/TPEX 全失敗（${finmindEndpoint?.name||'無代理'}）`);
+    return { ok: 0, fail: STOCKS.length };
   }
 
-  // 批次並行：每批 5 支同時發請求，批次間等 300ms 避免 rate limit
-  const BATCH_SIZE = 5;
-  for(let i = 0; i < STOCKS.length; i += BATCH_SIZE){
-    const batch = STOCKS.slice(i, i + BATCH_SIZE);
-    window.updateProgress(`抓取中... (${Math.min(i+BATCH_SIZE, STOCKS.length)}/${STOCKS.length})`);
-    await Promise.all(batch.map(s => fetchOne(s)));
-    if(i + BATCH_SIZE < STOCKS.length)
-      await new Promise(r=>setTimeout(r, 300));
+  // 2) 累積每日快照（for MA20 歷史）
+  const today = new Date().toISOString().slice(0,10);
+  if(!DAILY_HIST[today]) DAILY_HIST[today] = {};
+  for(const code in allMap){
+    DAILY_HIST[today][code] = allMap[code].close;
   }
+  saveDailyHist();
+
+  // 3) 逐檔 mutate STOCKS
+  for(const s of STOCKS){
+    const info = allMap[s.id];
+    if(!info){
+      fail++;
+      errs.push(`${s.id}:市場無收盤`);
+      continue;
+    }
+    // 快取市場歸屬（MIS 可以少拼一邊）
+    stockMarket[s.id] = info.market;
+    const ch  = +(info.ch).toFixed(2);
+    const prev = info.close - info.ch;
+    const pct = prev ? +(ch/prev*100).toFixed(2) : 0;
+    s.px = +info.close.toFixed(2);
+    s.ch = ch;
+    s.pct = pct;
+    s.open = +info.open.toFixed(2);
+    s.high = +info.high.toFixed(2);
+    s.low  = +info.low.toFixed(2);
+    s.vol  = info.vol;
+    s.date = info.date;
+    // 策略欄位：從累積的每日快照合成 MA5/MA20
+    const closes = buildHistFromDaily(s.id);
+    if(closes.length >= 3){
+      const normRows = closes.map(c=>({close:c, high:c, low:c}));
+      s.trend = computeTrendFromRows(normRows);
+      updateHistFromRows(s.id, normRows);
+    }else{
+      // 累積天數不足：用今日漲跌簡單推
+      s.trend = pct > 0.5 ? '多頭' : (pct < -0.5 ? '空頭' : '盤整');
+    }
+    s.sig = computeSig(s.trend, s.pct);
+    s.real = true;
+    s.pending = false;
+    ok++;
+  }
+  saveStockMarket();
   finmindLastError = errs.length ? errs.slice(0,3).join(' · ') : null;
   finmindLastUpdate = new Date();
-  // 更新頂端「資料截至」顯示為最新抓到的日期
+  // 更新頂端「資料截至」顯示
   if(ok > 0){
     const latest = STOCKS.filter(s=>s.real && s.date).map(s=>s.date).sort().pop();
     const dateEl = document.getElementById('snapshotDate');
     const srcEl = document.getElementById('snapshotSource');
     if(dateEl && latest){ dateEl.textContent = latest; }
-    if(srcEl){ srcEl.textContent = `FinMind · ${finmindEndpoint?.name||'線上'}`; }
+    if(srcEl){ srcEl.textContent = `TWSE · ${finmindEndpoint?.name||'線上'} · 全市場 ${codeCount}檔`; }
   }
-  renderWatch(); renderRanks();
+  SIGNALS = buildSignals();
+  renderWatch(); renderRanks(); renderSignals(); renderTopBuy();
   if(currentStock){
     const u = currentStock.ch>=0;
     const pxEl = document.getElementById('dPx');
@@ -1061,7 +2136,7 @@ async function refreshFromFinMind(silent=false){
   }
   updateDataSourceBadge(ok, fail);
   if(!silent){
-    toast(ok>0 ? `✅ 已更新 ${ok}/${STOCKS.length} 檔（${finmindEndpoint?.name||'?'}）`
+    toast(ok>0 ? `✅ 已更新 ${ok}/${STOCKS.length} 檔（TWSE ${finmindEndpoint?.name||'?'}）`
                : `❌ 全部失敗，改用預設資料`);
   }
   return { ok, fail };
@@ -1089,17 +2164,17 @@ function updateDataSourceBadge(ok, fail){
     : '';
   badge.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-      <span style="color:${okColor}">● FinMind · ${ep} · ${ok}/${STOCKS.length}</span>
+      <span style="color:${okColor}">● TWSE · ${ep} · ${ok}/${STOCKS.length}</span>
       <span style="display:flex;gap:6px;align-items:center">
         <span style="color:#9aa7c7">${t}</span>
-        <button onclick="event.stopPropagation();refreshFromFinMind(false)" style="background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.4);color:#4fc3f7;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">🔄</button>
+        <button onclick="event.stopPropagation();refreshPrices(false)" style="background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.4);color:#4fc3f7;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">🔄</button>
       </span>
     </div>
     ${errLine}`;
 }
 
 // 首次渲染預設資料 → 背景 fetch 真實資料
-renderMarket(); renderWatch(); renderRanks(); renderSignals();
+renderMarket(); renderCategoryChips(); renderWatch(); renderRanks(); renderSignals(); renderTopBuy();
 calc(); calcAdd();
 
 // 啟動流程：file:// 下瀏覽器封鎖所有跨域 fetch → 使用嵌入的真實資料
@@ -1122,13 +2197,26 @@ async function finmindStartup(){
     return;
   }
   window.updateProgress('初始化...');
-  await refreshFromFinMind(true);
+  updateMarketBadge();
+  await refreshPrices(true);
 }
 setTimeout(finmindStartup, 300);
 
-// 每 10 分鐘自動刷新（僅在 http(s) 環境；file:// 不會重試）
+// 自動刷新策略：盤中每 30 秒抓 MIS 即時；盤後每 10 分鐘抓 FinMind EOD
 if(location.protocol !== 'file:'){
-  setInterval(()=>refreshFromFinMind(true), 10*60*1000);
+  let lastAutoFetch = Date.now();
+  setInterval(()=>{
+    updateMarketBadge();
+    const st = getMarketStatus();
+    // open/pre-open: 30 秒；post-close: 1 分鐘；其他: 10 分鐘
+    const interval = (st === 'open' || st === 'pre-open') ? 30*1000
+                   : (st === 'post-close') ? 60*1000
+                   : 10*60*1000;
+    if(Date.now() - lastAutoFetch >= interval){
+      lastAutoFetch = Date.now();
+      refreshPrices(true);
+    }
+  }, 15*1000);
 }
 
 /* 首次開啟提示可安裝（僅在非 standalone 模式） */
